@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "afterearth_decorations",
+	"version": "${version}",
+	"name": "AfterEarth_Decorations",
+	"description": "AfterEarth mod for decorations, with bunch of new block",
+	"authors": [
+		"Reken"
+	],
+	"contact": {
+		"homepage": "https://reken.online",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/afterearth_decorations/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"online.reken.afterearth.deco.AfterEarth_Decorations"
+		],
+		"fabric-datagen": [
+			"online.reken.afterearth.deco.AfterEarth_DecorationsDataGenerator"
+		],
+		"client": [
+			"online.reken.afterearth.deco.AfterEarth_DecorationsClient"
+		]
+	},
+	"mixins": [
+		"afterearth_decorations.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
