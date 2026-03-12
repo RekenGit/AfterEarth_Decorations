@@ -2,6 +2,8 @@ package online.reken.afterearth.deco;
 
 import net.fabricmc.api.ModInitializer;
 
+import online.reken.afterearth.deco.block.CustomBlocks;
+import online.reken.afterearth.deco.item.CustomItemGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ public class AfterEarth_Decorations implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
-		LOGGER.info("Hello Fabric world!");
+		CustomItemGroups.registerModItemGroups();
+		CustomBlocks.registerModBlocks();
 	}
 }

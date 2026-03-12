@@ -1,0 +1,33 @@
+{
+  "itemgroup.afterearth_decorations.exterior_decoration_items": "Dekoracje Zewnętrzne",
+  "itemgroup.afterearth_decorations.interior_decoration_items": "Dekoracje Wnętrz",
+
+  "item.afterearth_decorations.quartz_checker_black": "Czarna Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_black_broken": "Zniszczona Czarna Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_black_yellow": "Żółto-Czarna Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_black_yellow_broken": "Zniszczona Żółto-Czarna Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_blue": "Niebieska Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_blue_broken": "Zniszczona Niebieska Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_brown": "Brązowa Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_brown_broken": "Zniszczona Brązowa Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_gray": "Szara Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_gray_broken": "Zniszczona Szara Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_green": "Zielona Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_checker_green_broken": "Zniszczona Zielona Kwarcowa Szachownica",
+  "item.afterearth_decorations.quartz_tile_black": "Czarne Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_black_broken": "Zniszczone Czarne Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_blue": "Niebieskie Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_blue_broken": "Zniszczone Niebieskie Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_green": "Zielone Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_green_broken": "Zniszczone Zielone Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_orange": "Pomarańczowe Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_orange_broken": "Zniszczone Pomarańczowe Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_purple": "Fioletowe Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_purple_broken": "Zniszczone Fioletowe Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_white": "Kwarcowe Kafelki",
+  "item.afterearth_decorations.quartz_tile_white_broken": "Zniszczone Kwarcowe Kafelki",
+
+  "item.afterearth_decorations.bricks_broken": "Zniszczone Cegły",
+  "item.afterearth_decorations.andesite_bricks": "Andezytowe Cegły",
+  "item.afterearth_decorations.andesite_bricks_broken": "Zniszczone Andezytowe Cegły"
+}

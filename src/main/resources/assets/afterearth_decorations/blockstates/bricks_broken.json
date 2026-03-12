@@ -1,0 +1,14 @@
+﻿{
+  "variants": {
+    "": [
+      { "model": "afterearth_decorations:block/bricks/bricks", "weight": 5 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken0", "weight": 3 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken1", "weight": 2 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken2", "weight": 1 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken3", "weight": 2 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken4", "weight": 3 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken5", "weight": 3 },
+      { "model": "afterearth_decorations:block/bricks/bricks_broken6", "weight": 4 }
+    ]
+  }
+}
