@@ -20,8 +20,9 @@ public class CustomItemGroups {
                     .icon(() -> new ItemStack(CustomBlocks.Andesite_Bricks))
                     .displayName(Text.translatable("itemgroup.afterearth_decorations.exterior_decoration_items"))
                     .entries((displayContext, entries) -> {
-                        entries.add(CustomBlocks.Bricks_Broken);
-                        for (Block block : ANDESITE_BRICK) entries.add(block);
+                        //entries.add(CustomBlocks.Bricks_Broken);
+                        for (Block block : BRICK_BROKEN_FAMILY.all()) entries.add(block);
+                        for (Block block : ANDESITE_BRICK_FAMILY.all()) entries.add(block);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
@@ -31,8 +32,8 @@ public class CustomItemGroups {
                     .displayName(Text.translatable("itemgroup.afterearth_decorations.interior_decoration_items"))
                     .entries((displayContext, entries) -> {
                         //entries.add(CustomBlocks.Quartz_Checker_Black);
-                        for (Block block : QUARTZ_CHECKER) entries.add(block);
-                        for (Block block : QUARTZ_TILE) entries.add(block);
+                        for (Block block : QUARTZ_CHECKER_FAMILY.all()) entries.add(block);
+                        for (Block block : QUARTZ_TILE_FAMILY.all()) entries.add(block);
                     }).build());
 
     public static void registerModItemGroups() {

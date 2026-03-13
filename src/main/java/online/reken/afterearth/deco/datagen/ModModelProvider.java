@@ -3,11 +3,13 @@ package online.reken.afterearth.deco.datagen;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.block.Block;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.block.WallBlock;
 import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.ItemModelGenerator;
-import online.reken.afterearth.deco.block.CustomBlocks;
-
-import java.util.ArrayList;
 
 import static online.reken.afterearth.deco.block.CustomBlocks.*;
 
@@ -18,28 +20,47 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        //blockStateModelGenerator.registerSimpleCubeAll(CustomBlocks.Andesite_Bricks);
 
-        //for (Block block : ANDESITE_BRICK_BLOCKS) blockStateModelGenerator.registerSimpleCubeAll(block);
-        for (Block block : QUARTZ_CHECKER_BLOCKS) blockStateModelGenerator.registerSimpleCubeAll(block);
-        for (Block block : QUARTZ_TILE_BLOCKS) blockStateModelGenerator.registerSimpleCubeAll(block);
+        for (Block block : QUARTZ_CHECKER_FAMILY.normal())
+            blockStateModelGenerator.registerSimpleCubeAll(block);
 
-        BlockStateModelGenerator.BlockTexturePool andesiteBrickPool = blockStateModelGenerator.registerCubeAllModelTexturePool(Andesite_Bricks);
-        andesiteBrickPool.slab(Andesite_Brick_Slab);
-        andesiteBrickPool.stairs(Andesite_Brick_Stairs);
-        andesiteBrickPool.wall(Andesite_Brick_Wall);
+        for (Block block : QUARTZ_TILE_FAMILY.normal())
+            blockStateModelGenerator.registerSimpleCubeAll(block);
 
-        //BlockStateModelGenerator.BlockTexturePool andesiteBrickBrokenPool = blockStateModelGenerator.registerCubeAllModelTexturePool(Andesite_Bricks_Broken);
-        //andesiteBrickBrokenPool.slab(Andesite_Brick_Slab_Broken);
-        //andesiteBrickBrokenPool.stairs(Andesite_Brick_Stairs_Broken);
-        //andesiteBrickBrokenPool.wall(Andesite_Brick_Wall_Broken);
-
-        blockStateModelGenerator.registerDoor(Andesite_Brick_Door);
-        blockStateModelGenerator.registerTrapdoor(Andesite_Brick_Trapdoor);
+        registerBlockFamily(blockStateModelGenerator, Andesite_Bricks, ANDESITE_BRICK_FAMILY.normal());
     }
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        //itemModelGenerator.register(CustomItem.Item_Name, Models.GENERATED);
+        // itemModelGenerator.register(...);
+    }
+
+    private void registerBlockFamily(
+            BlockStateModelGenerator blockStateModelGenerator,
+            Block baseCubeBlock,
+            Block[] familyBlocks
+    ) {
+        BlockStateModelGenerator.BlockTexturePool pool =
+                blockStateModelGenerator.registerCubeAllModelTexturePool(baseCubeBlock);
+
+        for (Block block : familyBlocks) {
+            if (block == baseCubeBlock) {
+                continue;
+            }
+
+            if (block instanceof SlabBlock) {
+                pool.slab(block);
+            } else if (block instanceof StairsBlock) {
+                pool.stairs(block);
+            } else if (block instanceof WallBlock) {
+                pool.wall(block);
+            } else if (block instanceof DoorBlock) {
+                blockStateModelGenerator.registerDoor(block);
+            } else if (block instanceof TrapdoorBlock) {
+                blockStateModelGenerator.registerTrapdoor(block);
+            } else {
+                blockStateModelGenerator.registerSimpleCubeAll(block);
+            }
+        }
     }
 }

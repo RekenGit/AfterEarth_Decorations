@@ -19,14 +19,13 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
-                .add(CustomBlocks.Bricks_Broken);
-
-        for (Block block : ANDESITE_BRICK) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
-        for (Block block : QUARTZ_CHECKER) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
-        for (Block block : QUARTZ_TILE) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
+        for (Block block : BRICK_BROKEN_FAMILY.all()) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
+        for (Block block : ANDESITE_BRICK_FAMILY.all()) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
+        for (Block block : QUARTZ_CHECKER_FAMILY.all()) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
+        for (Block block : QUARTZ_TILE_FAMILY.all()) valueLookupBuilder(BlockTags.PICKAXE_MINEABLE).add(block);
 
         valueLookupBuilder(BlockTags.WALLS)
+                .add(Brick_Wall_Broken)
                 .add(Andesite_Brick_Wall)
                 .add(Andesite_Brick_Wall_Broken);
 

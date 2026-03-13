@@ -28,11 +28,18 @@
   "item.afterearth_decorations.quartz_tile_white_broken": "Broken Quartz Tile",
 
   "item.afterearth_decorations.bricks_broken": "Broken Bricks",
+  "item.afterearth_decorations.brick_slab_broken": "Broken Brick Slab",
+  "item.afterearth_decorations.brick_stairs_broken": "Broken Brick Stairs",
+  "item.afterearth_decorations.brick_wall_broken": "Broken Brick Wall",
+
   "item.afterearth_decorations.andesite_bricks": "Andesite Bricks",
   "item.afterearth_decorations.andesite_bricks_broken": "Broken Andesite Bricks",
   "item.afterearth_decorations.andesite_brick_slab": "Andesite Brick Slab",
+  "item.afterearth_decorations.andesite_brick_slab_broken": "Broken Andesite Brick Slab",
   "item.afterearth_decorations.andesite_brick_stairs": "Andesite Brick Stairs",
+  "item.afterearth_decorations.andesite_brick_stairs_broken": "Broken Andesite Brick Stairs",
   "item.afterearth_decorations.andesite_brick_wall": "Andesite Brick Wall",
+  "item.afterearth_decorations.andesite_brick_wall_broken": "Broken Andesite Brick Wall",
 
   "item.afterearth_decorations.andesite_brick_door": "Andesite Brick Door",
   "item.afterearth_decorations.andesite_brick_trapdoor": "Andesite Brick Trapdoor"

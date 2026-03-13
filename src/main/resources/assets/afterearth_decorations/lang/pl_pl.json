@@ -28,6 +28,19 @@
   "item.afterearth_decorations.quartz_tile_white_broken": "Zniszczone Kwarcowe Kafelki",
 
   "item.afterearth_decorations.bricks_broken": "Zniszczone Cegły",
+  "item.afterearth_decorations.brick_slab_broken": "Zniszczona Ceglana Półpłytka",
+  "item.afterearth_decorations.brick_stairs_broken": "Zniszczone Ceglane Schodki",
+  "item.afterearth_decorations.brick_wall_broken": "Zniszczona Ceglana Ściana",
+
   "item.afterearth_decorations.andesite_bricks": "Andezytowe Cegły",
-  "item.afterearth_decorations.andesite_bricks_broken": "Zniszczone Andezytowe Cegły"
+  "item.afterearth_decorations.andesite_bricks_broken": "Zniszczone Andezytowe Cegły",
+  "item.afterearth_decorations.andesite_brick_slab": "Andezytowa Ceglana Półpłytka",
+  "item.afterearth_decorations.andesite_brick_slab_broken": "Zniszczona Andezytowa Ceglana Półpłytka",
+  "item.afterearth_decorations.andesite_brick_stairs": "Andezytowe Ceglane Schodki",
+  "item.afterearth_decorations.andesite_brick_stairs_broken": "Zniszczone Andezytowe Ceglane Schodki",
+  "item.afterearth_decorations.andesite_brick_wall": "Andezytowa Ceglana Ściana",
+  "item.afterearth_decorations.andesite_brick_wall_broken": "Zniszczona Andezytowa Ceglana Ściana",
+
+  "item.afterearth_decorations.andesite_brick_door": "Andezytowe Ceglane Drzwi",
+  "item.afterearth_decorations.andesite_brick_trapdoor": "Andezytowy Ceglany Właz"
 }

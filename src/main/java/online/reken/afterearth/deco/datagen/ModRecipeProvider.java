@@ -68,10 +68,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
                 //for (int i = 0; i < CustomBlocks.ANDESITE_BRICK_BLOCKS.length; i++)
                 //    GenerateStonecutterRecipeForBlocks(Blocks.ANDESITE, CustomBlocks.ANDESITE_BRICK_BLOCKS[i], CustomBlocks.ANDESITE_BRICK_BROKEN_BLOCKS[i]);
-                for (int i = 0; i < CustomBlocks.QUARTZ_CHECKER_BLOCKS.length; i++)
-                    GenerateStonecutterRecipeForBlocks(Blocks.QUARTZ_BLOCK, CustomBlocks.QUARTZ_CHECKER_BLOCKS[i], CustomBlocks.QUARTZ_CHECKER_BROKEN_BLOCKS[i]);
-                for (int i = 0; i < CustomBlocks.QUARTZ_TILE_BLOCKS.length; i++)
-                    GenerateStonecutterRecipeForBlocks(Blocks.QUARTZ_BLOCK, CustomBlocks.QUARTZ_TILE_BLOCKS[i], CustomBlocks.QUARTZ_TILE_BROKEN_BLOCKS[i]);
+                for (int i = 0; i < CustomBlocks.QUARTZ_CHECKER_FAMILY.normal().length; i++)
+                    GenerateStonecutterRecipeForBlocks(Blocks.QUARTZ_BLOCK, CustomBlocks.QUARTZ_CHECKER_FAMILY.normal()[i], CustomBlocks.QUARTZ_CHECKER_FAMILY.broken()[i]);
+                for (int i = 0; i < CustomBlocks.QUARTZ_TILE_FAMILY.normal().length; i++)
+                    GenerateStonecutterRecipeForBlocks(Blocks.QUARTZ_BLOCK, CustomBlocks.QUARTZ_TILE_FAMILY.normal()[i], CustomBlocks.QUARTZ_TILE_FAMILY.broken()[i]);
 
                 GenerateStonecutterRecipeForBlocks(Blocks.ANDESITE, CustomBlocks.Andesite_Bricks, CustomBlocks.Andesite_Bricks_Broken);
 
