@@ -27,7 +27,11 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         valueLookupBuilder(BlockTags.WALLS)
                 .add(Brick_Wall_Broken)
                 .add(Andesite_Brick_Wall)
-                .add(Andesite_Brick_Wall_Broken);
+                .add(Andesite_Brick_Wall_Broken)
+                .add(Test_Wall);
+
+        valueLookupBuilder(BlockTags.BARS)
+                .add(Test_Pane);
 
         //valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL)
         //        .add(CustomBlocks.Andesite_Bricks)

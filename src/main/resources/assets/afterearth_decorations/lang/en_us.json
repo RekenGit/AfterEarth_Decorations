@@ -1,6 +1,7 @@
 {
   "itemgroup.afterearth_decorations.exterior_decoration_items": "Exterior Decorations",
   "itemgroup.afterearth_decorations.interior_decoration_items": "Interior Decorations",
+  "itemgroup.afterearth_decorations.test_afterearth_items": "Test Blocks",
 
   "item.afterearth_decorations.quartz_checker_black": "Black Checkerboard Tile Quartz",
   "item.afterearth_decorations.quartz_checker_black_broken": "Broken Black Checkerboard Tile Quartz",
@@ -41,6 +42,15 @@
   "item.afterearth_decorations.andesite_brick_wall": "Andesite Brick Wall",
   "item.afterearth_decorations.andesite_brick_wall_broken": "Broken Andesite Brick Wall",
 
-  "item.afterearth_decorations.andesite_brick_door": "Andesite Brick Door",
-  "item.afterearth_decorations.andesite_brick_trapdoor": "Andesite Brick Trapdoor"
+  "item.afterearth_decorations.test_block": "Test Block",
+  "item.afterearth_decorations.test_slab": "Test Slab",
+  "item.afterearth_decorations.test_stairs": "Test Stairs",
+  "item.afterearth_decorations.test_wall": "Test Wall",
+  "item.afterearth_decorations.test_pillar": "Test Pillar",
+  "item.afterearth_decorations.test_glass": "Test Glass",
+  "item.afterearth_decorations.test_pane": "Test Pane",
+  "item.afterearth_decorations.test_block_door": "Test Door",
+  "item.afterearth_decorations.test_block_trapdoor": "Test Trapdoor",
+  "item.afterearth_decorations.test_block_carpet": "Test Carpet",
+  "item.afterearth_decorations.test_block_leaves": "Test Leaves"
 }

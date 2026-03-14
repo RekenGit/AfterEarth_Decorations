@@ -14,6 +14,15 @@ import online.reken.afterearth.deco.block.CustomBlocks;
 import static online.reken.afterearth.deco.block.CustomBlocks.*;
 
 public class CustomItemGroups {
+    public  static final ItemGroup Test_AE_Item_Group = Registry.register(Registries.ITEM_GROUP,
+            Identifier.of(AfterEarth_Decorations.MOD_ID, "test_afterearth_items"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(CustomBlocks.Test_Block))
+                    .displayName(Text.translatable("itemgroup.afterearth_decorations.test_items"))
+                    .entries((displayContext, entries) -> {
+                        for (Block block : TEST_FAMILY.normal()) entries.add(block);
+                    }).build());
+
     public  static final ItemGroup Exterior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
             Identifier.of(AfterEarth_Decorations.MOD_ID, "exterior_decoration_items"),
             FabricItemGroup.builder()

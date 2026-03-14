@@ -3,8 +3,10 @@ package online.reken.afterearth.deco.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.SlabBlock;
+import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryWrapper;
 import online.reken.afterearth.deco.block.CustomBlocks;
 
@@ -38,6 +40,8 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider {
         for (Block block : ANDESITE_BRICK_FAMILY.all()) addTypedDrop(block);
         for (Block block : QUARTZ_CHECKER_FAMILY.all()) addDrop(block);
         for (Block block : QUARTZ_TILE_FAMILY.all()) addDrop(block);
+
+        addDrop(Test_Leaves, leavesDrops(Test_Leaves, Blocks.OAK_SAPLING, 0,09f));
 
         //addDrop(CustomBlocks.Bricks_Broken, oreDrops(CustomBlocks.Andesite_Bricks, CustomItem.Item_Name));
     }

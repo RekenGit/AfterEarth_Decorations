@@ -2,14 +2,13 @@ package online.reken.afterearth.deco.datagen;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.Block;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.block.WallBlock;
+import net.minecraft.block.*;
 import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.ItemModelGenerator;
+import net.minecraft.client.data.TexturedModel;
+import net.minecraft.client.render.model.json.WeightedVariant;
+import online.reken.afterearth.deco.AfterEarth_Decorations;
+import org.joml.sampling.BestCandidateSampling;
 
 import static online.reken.afterearth.deco.block.CustomBlocks.*;
 
@@ -20,6 +19,8 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+        //for (Block block : TEST_FAMILY.normal()) registerBlocks(blockStateModelGenerator, block);
+        registerBlockFamily(blockStateModelGenerator, Test_Block, TEST_FAMILY.normal());
 
         for (Block block : QUARTZ_CHECKER_FAMILY.normal())
             blockStateModelGenerator.registerSimpleCubeAll(block);
@@ -33,6 +34,37 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         // itemModelGenerator.register(...);
+    }
+
+    Block glassBlock;
+    private void registerBlocks(BlockStateModelGenerator blockStateModelGenerator, Block block) {
+        if (block instanceof PillarBlock) {
+            blockStateModelGenerator.createLogTexturePool(Test_Pillar)
+                    .log(Test_Pillar);
+        } else if (block instanceof TransparentBlock) {
+            glassBlock = block;
+        } else if (block instanceof PaneBlock) {
+            if (glassBlock != null)
+                blockStateModelGenerator.registerGlassAndPane(glassBlock, block);
+            else
+                AfterEarth_Decorations.LOGGER.error("Cant find glass block, for: " + block.getName());
+        } else if (block instanceof DoorBlock) {
+            blockStateModelGenerator.registerDoor(block);
+        } else if (block instanceof TrapdoorBlock) {
+            blockStateModelGenerator.registerTrapdoor(block);
+        } else if (block instanceof CarpetBlock) {
+            registerCarpet(blockStateModelGenerator, block);
+        } else if (block instanceof LeavesBlock) {
+            blockStateModelGenerator.registerTintedBlockAndItem(block, TexturedModel.LEAVES, 16777215);
+        } else {
+            AfterEarth_Decorations.LOGGER.error("Cant find block type, for: " + block.getName());
+            blockStateModelGenerator.registerSimpleCubeAll(block);
+        }
+    }
+
+    public final void registerCarpet(BlockStateModelGenerator blockStateModelGenerator, Block carpet) {
+        WeightedVariant weightedVariant = BlockStateModelGenerator.createWeightedVariant(TexturedModel.CARPET.upload(carpet, blockStateModelGenerator.modelCollector));
+        blockStateModelGenerator.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(carpet, weightedVariant));
     }
 
     private void registerBlockFamily(
@@ -54,10 +86,24 @@ public class ModModelProvider extends FabricModelProvider {
                 pool.stairs(block);
             } else if (block instanceof WallBlock) {
                 pool.wall(block);
+            } else if (block instanceof PillarBlock) {
+                blockStateModelGenerator.createLogTexturePool(Test_Pillar)
+                        .log(Test_Pillar);
+            } else if (block instanceof TransparentBlock) {
+                glassBlock = block;
+            } else if (block instanceof PaneBlock) {
+                if (glassBlock != null)
+                    blockStateModelGenerator.registerGlassAndPane(glassBlock, block);
+                else
+                    AfterEarth_Decorations.LOGGER.error("Cant find glass block, for: " + block.getName());
             } else if (block instanceof DoorBlock) {
                 blockStateModelGenerator.registerDoor(block);
             } else if (block instanceof TrapdoorBlock) {
                 blockStateModelGenerator.registerTrapdoor(block);
+            } else if (block instanceof CarpetBlock) {
+                registerCarpet(blockStateModelGenerator, block);
+            } else if (block instanceof LeavesBlock) {
+                blockStateModelGenerator.registerTintedBlockAndItem(block, TexturedModel.LEAVES, 16777215);
             } else {
                 blockStateModelGenerator.registerSimpleCubeAll(block);
             }
