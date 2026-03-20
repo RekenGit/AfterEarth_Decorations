@@ -11,8 +11,11 @@ public class AfterEarth_DecorationsDataGenerator implements DataGeneratorEntrypo
 
 		pack.addProvider(ModBlockTagProvider::new);
 		pack.addProvider(ModLootTableProvider::new);
-		pack.addProvider(ModModelProvider::new);
-		pack.addProvider(BrokenBlockModelProvider::new);
+		//pack.addProvider(ModBlockGenerator::new);
+		pack.addProvider(ModModelProvider2::new);
+		pack.addProvider(ModBrokenModelProvider::new);
+		//pack.addProvider(ModModelProvider::new);
+		//pack.addProvider(BrokenBlockModelProvider::new);
 		pack.addProvider(ModRecipeProvider::new);
 	}
 }

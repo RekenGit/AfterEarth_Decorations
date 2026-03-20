@@ -1,0 +1,660 @@
+package online.reken.afterearth.deco.datagen;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.DataWriter;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
+import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeighted;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.IntFunction;
+
+import static online.reken.afterearth.deco.block.CustomBlocks.*;
+
+public class ModBrokenModelProvider implements DataProvider {
+    private static final int BROKEN_VARIANT_COUNT = 7;
+    private static final int EXPECTED_WEIGHT_COUNT = BROKEN_VARIANT_COUNT + 1;
+
+    private static final List<IBlockFamily> BROKEN_FAMILIES = List.of(
+            BRICK_BROKEN_FAMILY,
+            ANDESITE_BRICK_FAMILY,
+            GRANITE_BRICK_FAMILY,
+            DIORITE_BRICK_FAMILY,
+            QUARTZ_CHECKER_FAMILY,
+            QUARTZ_TILE_FAMILY,
+            SCRAP_METAL_SHEET_FAMILY
+    );
+
+    private final DataOutput.PathResolver blockstatesPathResolver;
+    private final DataOutput.PathResolver modelsPathResolver;
+    private final DataOutput.PathResolver itemsPathResolver;
+
+    public ModBrokenModelProvider(FabricDataOutput output) {
+        this.blockstatesPathResolver = output.getResolver(DataOutput.OutputType.RESOURCE_PACK, "blockstates");
+        this.modelsPathResolver = output.getResolver(DataOutput.OutputType.RESOURCE_PACK, "models");
+        this.itemsPathResolver = output.getResolver(DataOutput.OutputType.RESOURCE_PACK, "items");
+    }
+
+    @Override
+    public CompletableFuture<?> run(DataWriter writer) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        for (IBlockFamily family : BROKEN_FAMILIES)
+            futures.addAll(generateBlocksFamily(writer, family));
+
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
+    @Override
+    public String getName() {
+        return "Broken Block Model Provider";
+    }
+
+    private List<CompletableFuture<?>> generateBlocksFamily(DataWriter writer, IBlockFamily family) {
+        validateWeights(family);
+
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        for (Block block : family.broken()) {
+            futures.addAll(generateBrokenBlockFamily(writer, block, family));
+        }
+        return futures;
+    }
+
+    private List<CompletableFuture<?>> generateBrokenBlockFamily(
+            DataWriter writer,
+            Block brokenBlock,
+            IBlockFamily family
+    ) {
+        DatagenBlockKind kind = DatagenBlockKind.resolve(brokenBlock);
+        if (!kind.supportsBrokenWeightedGeneration()) {
+            throw new IllegalArgumentException("Unsupported broken block kind for " + Registries.BLOCK.getId(brokenBlock) + ": " + kind);
+        }
+
+        BrokenContext ctx = BrokenContext.of(brokenBlock, family);
+
+        return switch (kind) {
+            case CUBE -> generateCube(writer, ctx);
+            case SLAB -> generateSlab(writer, ctx);
+            case STAIRS -> generateStairs(writer, ctx);
+            case WALL -> generateWall(writer, ctx);
+            default -> throw new IllegalStateException("Unexpected value: " + kind);
+        };
+    }
+
+    private List<CompletableFuture<?>> generateCube(DataWriter writer, BrokenContext ctx) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        String baseModelId = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
+        String brokenModelPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
+
+        futures.add(writeBlockstate(
+                writer,
+                ctx.blockId(),
+                createSimpleWeightedBlockStateJson(baseModelId, brokenModelPrefix, ctx.weights())
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
+                i -> createModelJson("minecraft:block/cube_all", ctx.texturePrefix() + i, "all")
+        ));
+
+        futures.add(writeItem(
+                writer,
+                ctx.blockId(),
+                createItemModelJson(brokenModelPrefix + "0")
+        ));
+
+        return futures;
+    }
+
+    private List<CompletableFuture<?>> generateSlab(DataWriter writer, BrokenContext ctx) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        String baseBottomModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
+        String baseTopModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_top";
+        String baseDoubleModel = ctx.baseNamespace() + ":block/" + slabDoubleBasePath(ctx.resultBlock());
+
+        String brokenBottomPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
+        String brokenTopPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_top";
+        String brokenDoublePrefix = ctx.texturePrefix();
+
+        futures.add(writeBlockstate(
+                writer,
+                ctx.blockId(),
+                createSlabWeightedBlockStateJson(
+                        baseBottomModel, brokenBottomPrefix,
+                        baseTopModel, brokenTopPrefix,
+                        baseDoubleModel, brokenDoublePrefix,
+                        ctx.weights()
+                )
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
+                i -> createModelJson("minecraft:block/slab", ctx.texturePrefix() + i, "bottom", "top", "side")
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_top" + i),
+                i -> createModelJson("minecraft:block/slab_top", ctx.texturePrefix() + i, "bottom", "top", "side")
+        ));
+
+        futures.add(writeItem(
+                writer,
+                ctx.blockId(),
+                createItemModelJson(brokenBottomPrefix + "0")
+        ));
+
+        return futures;
+    }
+
+    private List<CompletableFuture<?>> generateStairs(DataWriter writer, BrokenContext ctx) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        String baseStraightModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
+        String baseInnerModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_inner";
+        String baseOuterModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_outer";
+
+        String brokenStraightPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
+        String brokenInnerPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_inner";
+        String brokenOuterPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_outer";
+
+        futures.add(writeBlockstate(
+                writer,
+                ctx.blockId(),
+                createStairsWeightedBlockStateJson(
+                        baseStraightModel, brokenStraightPrefix,
+                        baseInnerModel, brokenInnerPrefix,
+                        baseOuterModel, brokenOuterPrefix,
+                        ctx.weights()
+                )
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
+                i -> createModelJson("minecraft:block/stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_inner" + i),
+                i -> createModelJson("minecraft:block/inner_stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_outer" + i),
+                i -> createModelJson("minecraft:block/outer_stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+        ));
+
+        futures.add(writeItem(
+                writer,
+                ctx.blockId(),
+                createItemModelJson(brokenStraightPrefix + "0")
+        ));
+
+        return futures;
+    }
+
+    private List<CompletableFuture<?>> generateWall(DataWriter writer, BrokenContext ctx) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        String basePostModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_post";
+        String baseSideModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_side";
+        String baseSideTallModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_side_tall";
+
+        String brokenPostPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_post";
+        String brokenSidePrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_side";
+        String brokenSideTallPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_side_tall";
+
+        futures.add(writeBlockstate(
+                writer,
+                ctx.blockId(),
+                createWallWeightedBlockStateJson(
+                        basePostModel, brokenPostPrefix,
+                        baseSideModel, brokenSidePrefix,
+                        baseSideTallModel, brokenSideTallPrefix,
+                        ctx.weights()
+                )
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_post" + i),
+                i -> createModelJson("minecraft:block/template_wall_post", ctx.texturePrefix() + i, "wall")
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_side" + i),
+                i -> createModelJson("minecraft:block/template_wall_side", ctx.texturePrefix() + i, "wall")
+        ));
+
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_side_tall" + i),
+                i -> createModelJson("minecraft:block/template_wall_side_tall", ctx.texturePrefix() + i, "wall")
+        ));
+
+        Identifier inventoryModelId = Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_inventory");
+        futures.add(writeModel(
+                writer,
+                inventoryModelId,
+                createModelJson("minecraft:block/wall_inventory", ctx.texturePrefix() + "0", "wall")
+        ));
+
+        futures.add(writeItem(
+                writer,
+                ctx.blockId(),
+                createItemModelJson(ctx.namespace() + ":block/" + ctx.resultPath() + "_inventory")
+        ));
+
+        return futures;
+    }
+
+    private List<CompletableFuture<?>> writeRepeatedModels(
+            DataWriter writer,
+            IntFunction<Identifier> idFactory,
+            IntFunction<JsonObject> jsonFactory
+    ) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        for (int i = 0; i < BROKEN_VARIANT_COUNT; i++) {
+            futures.add(writeModel(writer, idFactory.apply(i), jsonFactory.apply(i)));
+        }
+        return futures;
+    }
+
+    private void validateWeights(IBlockFamily family) {
+        if (family instanceof BlockFamilyWeighted){
+            if (((BlockFamilyWeighted) family).weights().length != EXPECTED_WEIGHT_COUNT) {
+                throw new IllegalArgumentException(
+                        "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
+                );
+            }
+        } else if (family instanceof BlockFamilyWeightedWithBase) {
+            if (((BlockFamilyWeightedWithBase) family).weights().length != EXPECTED_WEIGHT_COUNT) {
+                throw new IllegalArgumentException(
+                        "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
+                );
+            }
+        } else
+            throw  new IllegalArgumentException("Family " + family.getBaseBlock().getName() + " dont have weights set.");
+    }
+
+    private JsonObject createSimpleWeightedBlockStateJson(String baseModelId, String brokenModelPrefix, int[] weights) {
+        JsonObject root = new JsonObject();
+        JsonObject variants = new JsonObject();
+        variants.add("", createBrokenVariantArray(baseModelId, brokenModelPrefix, weights, null, null, false));
+        root.add("variants", variants);
+        return root;
+    }
+
+    private JsonObject createSlabWeightedBlockStateJson(
+            String baseBottomModel, String brokenBottomPrefix,
+            String baseTopModel, String brokenTopPrefix,
+            String baseDoubleModel, String brokenDoublePrefix,
+            int[] weights
+    ) {
+        JsonObject root = new JsonObject();
+        JsonObject variants = new JsonObject();
+
+        variants.add("type=bottom", createBrokenVariantArray(baseBottomModel, brokenBottomPrefix, weights, null, null, false));
+        variants.add("type=top", createBrokenVariantArray(baseTopModel, brokenTopPrefix, weights, null, null, false));
+        variants.add("type=double", createBrokenVariantArray(baseDoubleModel, brokenDoublePrefix, weights, null, null, false));
+
+        root.add("variants", variants);
+        return root;
+    }
+
+    private JsonObject createStairsWeightedBlockStateJson(
+            String baseStraightModel, String brokenStraightPrefix,
+            String baseInnerModel, String brokenInnerPrefix,
+            String baseOuterModel, String brokenOuterPrefix,
+            int[] weights
+    ) {
+        JsonObject root = new JsonObject();
+        JsonObject variants = new JsonObject();
+
+        addStairsVariant(variants, "facing=east,half=bottom,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 0, 0);
+        addStairsVariant(variants, "facing=west,half=bottom,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 0, 180);
+        addStairsVariant(variants, "facing=south,half=bottom,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 0, 90);
+        addStairsVariant(variants, "facing=north,half=bottom,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 0, 270);
+
+        addStairsVariant(variants, "facing=east,half=top,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 180, 0);
+        addStairsVariant(variants, "facing=west,half=top,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 180, 180);
+        addStairsVariant(variants, "facing=south,half=top,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 180, 90);
+        addStairsVariant(variants, "facing=north,half=top,shape=straight", baseStraightModel, brokenStraightPrefix, weights, 180, 270);
+
+        addStairsVariant(variants, "facing=east,half=bottom,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 0, 0);
+        addStairsVariant(variants, "facing=west,half=bottom,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 0, 180);
+        addStairsVariant(variants, "facing=south,half=bottom,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 0, 90);
+        addStairsVariant(variants, "facing=north,half=bottom,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 0, 270);
+
+        addStairsVariant(variants, "facing=east,half=bottom,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 0, 270);
+        addStairsVariant(variants, "facing=west,half=bottom,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 0, 90);
+        addStairsVariant(variants, "facing=south,half=bottom,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 0, 0);
+        addStairsVariant(variants, "facing=north,half=bottom,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 0, 180);
+
+        addStairsVariant(variants, "facing=east,half=top,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 180, 90);
+        addStairsVariant(variants, "facing=west,half=top,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 180, 270);
+        addStairsVariant(variants, "facing=south,half=top,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 180, 180);
+        addStairsVariant(variants, "facing=north,half=top,shape=outer_right", baseOuterModel, brokenOuterPrefix, weights, 180, 0);
+
+        addStairsVariant(variants, "facing=east,half=top,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 180, 0);
+        addStairsVariant(variants, "facing=west,half=top,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 180, 180);
+        addStairsVariant(variants, "facing=south,half=top,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 180, 90);
+        addStairsVariant(variants, "facing=north,half=top,shape=outer_left", baseOuterModel, brokenOuterPrefix, weights, 180, 270);
+
+        addStairsVariant(variants, "facing=east,half=bottom,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 0, 0);
+        addStairsVariant(variants, "facing=west,half=bottom,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 0, 180);
+        addStairsVariant(variants, "facing=south,half=bottom,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 0, 90);
+        addStairsVariant(variants, "facing=north,half=bottom,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 0, 270);
+
+        addStairsVariant(variants, "facing=east,half=bottom,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 0, 270);
+        addStairsVariant(variants, "facing=west,half=bottom,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 0, 90);
+        addStairsVariant(variants, "facing=south,half=bottom,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 0, 0);
+        addStairsVariant(variants, "facing=north,half=bottom,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 0, 180);
+
+        addStairsVariant(variants, "facing=east,half=top,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 180, 90);
+        addStairsVariant(variants, "facing=west,half=top,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 180, 270);
+        addStairsVariant(variants, "facing=south,half=top,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 180, 180);
+        addStairsVariant(variants, "facing=north,half=top,shape=inner_right", baseInnerModel, brokenInnerPrefix, weights, 180, 0);
+
+        addStairsVariant(variants, "facing=east,half=top,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 180, 0);
+        addStairsVariant(variants, "facing=west,half=top,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 180, 180);
+        addStairsVariant(variants, "facing=south,half=top,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 180, 90);
+        addStairsVariant(variants, "facing=north,half=top,shape=inner_left", baseInnerModel, brokenInnerPrefix, weights, 180, 270);
+
+        root.add("variants", variants);
+        return root;
+    }
+
+    private JsonObject createWallWeightedBlockStateJson(
+            String basePostModel, String brokenPostPrefix,
+            String baseSideModel, String brokenSidePrefix,
+            String baseSideTallModel, String brokenSideTallPrefix,
+            int[] weights
+    ) {
+        JsonObject root = new JsonObject();
+        JsonArray multipart = new JsonArray();
+
+        multipart.add(createWallMultipartPart(
+                when("up", "true"),
+                createBrokenVariantArray(basePostModel, brokenPostPrefix, weights, null, null, false)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("north", "low"),
+                createBrokenVariantArray(baseSideModel, brokenSidePrefix, weights, null, null, false)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("east", "low"),
+                createBrokenVariantArray(baseSideModel, brokenSidePrefix, weights, null, 90, true)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("south", "low"),
+                createBrokenVariantArray(baseSideModel, brokenSidePrefix, weights, null, 180, true)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("west", "low"),
+                createBrokenVariantArray(baseSideModel, brokenSidePrefix, weights, null, 270, true)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("north", "tall"),
+                createBrokenVariantArray(baseSideTallModel, brokenSideTallPrefix, weights, null, null, false)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("east", "tall"),
+                createBrokenVariantArray(baseSideTallModel, brokenSideTallPrefix, weights, null, 90, true)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("south", "tall"),
+                createBrokenVariantArray(baseSideTallModel, brokenSideTallPrefix, weights, null, 180, true)
+        ));
+
+        multipart.add(createWallMultipartPart(
+                when("west", "tall"),
+                createBrokenVariantArray(baseSideTallModel, brokenSideTallPrefix, weights, null, 270, true)
+        ));
+
+        root.add("multipart", multipart);
+        return root;
+    }
+
+    private void addStairsVariant(
+            JsonObject variants,
+            String key,
+            String baseModelId,
+            String brokenModelPrefix,
+            int[] weights,
+            int x,
+            int y
+    ) {
+        Integer rotX = x == 0 ? null : x;
+        Integer rotY = y == 0 ? null : y;
+        boolean uvlock = rotX != null || rotY != null;
+
+        variants.add(key, createBrokenVariantArray(baseModelId, brokenModelPrefix, weights, rotX, rotY, uvlock));
+    }
+
+    private JsonArray createBrokenVariantArray(
+            String baseModelId,
+            String brokenModelPrefix,
+            int[] weights,
+            Integer x,
+            Integer y,
+            boolean uvlock
+    ) {
+        JsonArray variantList = new JsonArray();
+
+        variantList.add(createVariantEntry(baseModelId, weights[0], x, y, uvlock));
+
+        for (int i = 0; i < BROKEN_VARIANT_COUNT; i++) {
+            variantList.add(createVariantEntry(brokenModelPrefix + i, weights[i + 1], x, y, uvlock));
+        }
+
+        return variantList;
+    }
+
+    private JsonObject createVariantEntry(String modelId, int weight, Integer x, Integer y, boolean uvlock) {
+        JsonObject entry = new JsonObject();
+        entry.addProperty("model", modelId);
+        entry.addProperty("weight", weight);
+
+        if (x != null) {
+            entry.addProperty("x", x);
+        }
+        if (y != null) {
+            entry.addProperty("y", y);
+        }
+        if (uvlock) {
+            entry.addProperty("uvlock", true);
+        }
+
+        return entry;
+    }
+
+    private JsonObject createWallMultipartPart(JsonObject when, JsonArray apply) {
+        JsonObject part = new JsonObject();
+        part.add("when", when);
+        part.add("apply", apply);
+        return part;
+    }
+
+    private JsonObject when(String key, String value) {
+        JsonObject when = new JsonObject();
+        when.addProperty(key, value);
+        return when;
+    }
+
+    private JsonObject createItemModelJson(String modelId) {
+        JsonObject root = new JsonObject();
+        JsonObject model = new JsonObject();
+
+        model.addProperty("type", "minecraft:model");
+        model.addProperty("model", modelId);
+
+        root.add("model", model);
+        return root;
+    }
+
+    private JsonObject createModelJson(String parent, String textureId, String... textureKeys) {
+        JsonObject root = new JsonObject();
+        root.addProperty("parent", parent);
+
+        JsonObject textures = new JsonObject();
+        for (String textureKey : textureKeys) {
+            textures.addProperty(textureKey, textureId);
+        }
+
+        root.add("textures", textures);
+        return root;
+    }
+
+    private String basePath(Block baseBlock) {
+        Identifier blockId = Registries.BLOCK.getId(baseBlock);
+        String path = blockId.getPath();
+
+        if (path.endsWith("_broken")) {
+            return path.substring(0, path.length() - "_broken".length());
+        }
+
+        return path;
+    }
+
+    private String slabDoubleBasePath(Block baseBlock) {
+        return basePath(baseBlock)
+                .replace("brick", "bricks")
+                .replace("_slab", "");
+    }
+
+    private CompletableFuture<?> writeBlockstate(DataWriter writer, Identifier id, JsonObject json) {
+        Path path = blockstatesPathResolver.resolveJson(id);
+        return DataProvider.writeToPath(writer, json, path);
+    }
+
+    private CompletableFuture<?> writeModel(DataWriter writer, Identifier id, JsonObject json) {
+        Path path = modelsPathResolver.resolveJson(id);
+        return DataProvider.writeToPath(writer, json, path);
+    }
+
+    private CompletableFuture<?> writeItem(DataWriter writer, Identifier id, JsonObject json) {
+        Path path = itemsPathResolver.resolveJson(id);
+        return DataProvider.writeToPath(writer, json, path);
+    }
+
+    private record BrokenContext(
+            Block resultBlock,
+            IBlockFamily family,
+            Identifier blockId,
+            String namespace,
+            String resultPath,
+            String basePath,
+            String baseNamespace,
+            String counterpartPath,
+            String counterpartNamespace,
+            String texturePrefix,
+            int[] weights
+    ) {
+        static BrokenContext of(Block resultBlock, IBlockFamily family) {
+            Identifier blockId = Registries.BLOCK.getId(resultBlock);
+            String namespace = blockId.getNamespace();
+            String resultPath = blockId.getPath();
+
+            Block familyBaseModel = family.getBaseBlock();
+            Identifier baseId = Registries.BLOCK.getId(familyBaseModel);
+
+            String basePath = baseId.getPath().endsWith("_broken")
+                    ? baseId.getPath().substring(0, baseId.getPath().length() - "_broken".length())
+                    : baseId.getPath();
+
+            String baseNamespace = baseId.getNamespace();
+
+            Block counterpartBlock = getNormalCounterpartStatic(resultBlock, family);
+            Identifier counterpartId = Registries.BLOCK.getId(counterpartBlock);
+
+            String counterpartPath = counterpartId.getPath();
+            String counterpartNamespace = counterpartId.getNamespace();
+
+            String texturePrefix = blockId.getNamespace() + ":block/" + getBrokenTexturePoolPathStatic(resultBlock, family);
+            int[] weights = getWeightsStatic(family);
+
+            return new BrokenContext(
+                    resultBlock,
+                    family,
+                    blockId,
+                    namespace,
+                    resultPath,
+                    basePath,
+                    baseNamespace,
+                    counterpartPath,
+                    counterpartNamespace,
+                    texturePrefix,
+                    weights
+            );
+        }
+    }
+
+    private static Block getNormalCounterpartStatic(Block brokenBlock, IBlockFamily family) {
+        Block[] broken = family.broken();
+        Block[] normal = family.normal();
+
+        if (normal != null && broken != null && normal.length == broken.length) {
+            for (int i = 0; i < broken.length; i++) {
+                if (broken[i] == brokenBlock) {
+                    return normal[i];
+                }
+            }
+        }
+
+        if (family == BRICK_BROKEN_FAMILY) {
+            return switch (DatagenBlockKind.resolve(brokenBlock)) {
+                case CUBE -> Blocks.BRICKS;
+                case SLAB -> Blocks.BRICK_SLAB;
+                case STAIRS -> Blocks.BRICK_STAIRS;
+                case WALL -> Blocks.BRICK_WALL;
+                default -> Blocks.BRICKS;
+            };
+        }
+
+        return family.getBaseBlock();
+    }
+
+    private static String getBrokenTexturePoolPathStatic(Block brokenBlock, IBlockFamily family) {
+        if (family instanceof BlockFamilyWeightedWithBase weightedWithBase) {
+            return weightedWithBase.texturePoolPath();
+        }
+
+        Identifier brokenId = Registries.BLOCK.getId(brokenBlock);
+        return brokenId.getPath();
+    }
+
+    private static int[] getWeightsStatic(IBlockFamily family) {
+        if (family instanceof BlockFamilyWeighted weighted) {
+            return weighted.weights();
+        }
+        if (family instanceof BlockFamilyWeightedWithBase weightedWithBase) {
+            return weightedWithBase.weights();
+        }
+        throw new IllegalArgumentException("Family " + family.getBaseBlock().getName() + " dont have weights set.");
+    }
+}

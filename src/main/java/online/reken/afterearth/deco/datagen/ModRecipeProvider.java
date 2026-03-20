@@ -74,6 +74,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     GenerateStonecutterRecipeForBlocks(Blocks.QUARTZ_BLOCK, CustomBlocks.QUARTZ_TILE_FAMILY.normal()[i], CustomBlocks.QUARTZ_TILE_FAMILY.broken()[i]);
 
                 GenerateStonecutterRecipeForBlocks(Blocks.ANDESITE, CustomBlocks.Andesite_Bricks, CustomBlocks.Andesite_Bricks_Broken);
+                GenerateStonecutterRecipeForBlocks(Blocks.GRANITE, CustomBlocks.Granite_Bricks, CustomBlocks.Granite_Bricks_Broken);
+                GenerateStonecutterRecipeForBlocks(Blocks.DIORITE, CustomBlocks.Diorite_Bricks, CustomBlocks.Diorite_Bricks_Broken);
 
             }
 

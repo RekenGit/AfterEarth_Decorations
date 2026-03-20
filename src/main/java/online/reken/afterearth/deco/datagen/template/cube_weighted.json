@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "": [
+      {variants:default}
+    ]
+  },
+  "__variantTemplates": {
+    "default": {
+      "base": {
+        "model": "{baseModel}",
+        "weight": "{weights[0]}"
+      },
+      "generated": {
+        "from": 0,
+        "to": 6,
+        "template": {
+          "model": "{brokenModelPrefix}{index}",
+          "weight": "{weights[index+1]}"
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ package online.reken.afterearth.deco.item;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.Block;
+import net.minecraft.block.WallBannerBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -20,7 +21,17 @@ public class CustomItemGroups {
                     .icon(() -> new ItemStack(CustomBlocks.Test_Block))
                     .displayName(Text.translatable("itemgroup.afterearth_decorations.test_items"))
                     .entries((displayContext, entries) -> {
-                        for (Block block : TEST_FAMILY.normal()) entries.add(block);
+                        for (Block block : TEST_FAMILY.all()) entries.add(block);
+                    }).build());
+
+    public  static final ItemGroup Street_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
+            Identifier.of(AfterEarth_Decorations.MOD_ID, "street_decoration_items"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(Street_Black_Gravel_White_Diagonal_Lines))
+                    .displayName(Text.translatable("itemgroup.afterearth_decorations.street_decoration_items"))
+                    .entries((displayContext, entries) -> {
+                        for (Block block : STREET_LINE_BLACK_GRAVEL_FAMILY.all()) entries.add(block);
+                        for (Block block : STREET_LINE_GRAY_GRAVEL_FAMILY.all()) entries.add(block);
                     }).build());
 
     public  static final ItemGroup Exterior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
@@ -32,6 +43,12 @@ public class CustomItemGroups {
                         //entries.add(CustomBlocks.Bricks_Broken);
                         for (Block block : BRICK_BROKEN_FAMILY.all()) entries.add(block);
                         for (Block block : ANDESITE_BRICK_FAMILY.all()) entries.add(block);
+                        for (Block block : GRANITE_BRICK_FAMILY.all()) entries.add(block);
+                        for (Block block : DIORITE_BRICK_FAMILY.all()) entries.add(block);
+                        for (Block block : METAL_SHEET_FAMILY.all()) entries.add(block);
+                        for (Block block : EXPOSED_METAL_SHEET_FAMILY.all()) entries.add(block);
+                        for (Block block : WEATHERED_METAL_FAMILY.all()) entries.add(block);
+                        for (Block block : SCRAP_METAL_SHEET_FAMILY.all()) entries.add(block);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,

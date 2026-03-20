@@ -1,0 +1,57 @@
+{
+  "variants": {
+    "type=bottom": [
+      {variants:bottom}
+    ],
+    "type=top": [
+      {variants:top}
+    ],
+    "type=double": [
+      {variants:double}
+    ]
+  },
+  "__variantTemplates": {
+    "bottom": {
+      "base": {
+        "model": "{baseBottomModel}",
+        "weight": "{weights[0]}"
+      },
+      "generated": {
+        "from": 0,
+        "to": 6,
+        "template": {
+          "model": "{brokenBottomPrefix}{index}",
+          "weight": "{weights[index+1]}"
+        }
+      }
+    },
+    "top": {
+      "base": {
+        "model": "{baseTopModel}",
+        "weight": "{weights[0]}"
+      },
+      "generated": {
+        "from": 0,
+        "to": 6,
+        "template": {
+          "model": "{brokenTopPrefix}{index}",
+          "weight": "{weights[index+1]}"
+        }
+      }
+    },
+    "double": {
+      "base": {
+        "model": "{baseDoubleModel}",
+        "weight": "{weights[0]}"
+      },
+      "generated": {
+        "from": 0,
+        "to": 6,
+        "template": {
+          "model": "{brokenDoublePrefix}{index}",
+          "weight": "{weights[index+1]}"
+        }
+      }
+    }
+  }
+}

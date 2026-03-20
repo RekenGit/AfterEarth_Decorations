@@ -1,0 +1,104 @@
+{
+  "variants": {
+    "facing=east,half=bottom,shape=straight": [{variants:straight_east_bottom}],
+    "facing=west,half=bottom,shape=straight": [{variants:straight_west_bottom}],
+    "facing=south,half=bottom,shape=straight": [{variants:straight_south_bottom}],
+    "facing=north,half=bottom,shape=straight": [{variants:straight_north_bottom}],
+
+    "facing=east,half=top,shape=straight": [{variants:straight_east_top}],
+    "facing=west,half=top,shape=straight": [{variants:straight_west_top}],
+    "facing=south,half=top,shape=straight": [{variants:straight_south_top}],
+    "facing=north,half=top,shape=straight": [{variants:straight_north_top}],
+
+    "facing=east,half=bottom,shape=outer_right": [{variants:outer_right_east_bottom}],
+    "facing=west,half=bottom,shape=outer_right": [{variants:outer_right_west_bottom}],
+    "facing=south,half=bottom,shape=outer_right": [{variants:outer_right_south_bottom}],
+    "facing=north,half=bottom,shape=outer_right": [{variants:outer_right_north_bottom}],
+
+    "facing=east,half=bottom,shape=outer_left": [{variants:outer_left_east_bottom}],
+    "facing=west,half=bottom,shape=outer_left": [{variants:outer_left_west_bottom}],
+    "facing=south,half=bottom,shape=outer_left": [{variants:outer_left_south_bottom}],
+    "facing=north,half=bottom,shape=outer_left": [{variants:outer_left_north_bottom}],
+
+    "facing=east,half=top,shape=outer_right": [{variants:outer_right_east_top}],
+    "facing=west,half=top,shape=outer_right": [{variants:outer_right_west_top}],
+    "facing=south,half=top,shape=outer_right": [{variants:outer_right_south_top}],
+    "facing=north,half=top,shape=outer_right": [{variants:outer_right_north_top}],
+
+    "facing=east,half=top,shape=outer_left": [{variants:outer_left_east_top}],
+    "facing=west,half=top,shape=outer_left": [{variants:outer_left_west_top}],
+    "facing=south,half=top,shape=outer_left": [{variants:outer_left_south_top}],
+    "facing=north,half=top,shape=outer_left": [{variants:outer_left_north_top}],
+
+    "facing=east,half=bottom,shape=inner_right": [{variants:inner_right_east_bottom}],
+    "facing=west,half=bottom,shape=inner_right": [{variants:inner_right_west_bottom}],
+    "facing=south,half=bottom,shape=inner_right": [{variants:inner_right_south_bottom}],
+    "facing=north,half=bottom,shape=inner_right": [{variants:inner_right_north_bottom}],
+
+    "facing=east,half=bottom,shape=inner_left": [{variants:inner_left_east_bottom}],
+    "facing=west,half=bottom,shape=inner_left": [{variants:inner_left_west_bottom}],
+    "facing=south,half=bottom,shape=inner_left": [{variants:inner_left_south_bottom}],
+    "facing=north,half=bottom,shape=inner_left": [{variants:inner_left_north_bottom}],
+
+    "facing=east,half=top,shape=inner_right": [{variants:inner_right_east_top}],
+    "facing=west,half=top,shape=inner_right": [{variants:inner_right_west_top}],
+    "facing=south,half=top,shape=inner_right": [{variants:inner_right_south_top}],
+    "facing=north,half=top,shape=inner_right": [{variants:inner_right_north_top}],
+
+    "facing=east,half=top,shape=inner_left": [{variants:inner_left_east_top}],
+    "facing=west,half=top,shape=inner_left": [{variants:inner_left_west_top}],
+    "facing=south,half=top,shape=inner_left": [{variants:inner_left_south_top}],
+    "facing=north,half=top,shape=inner_left": [{variants:inner_left_north_top}]
+  },
+  "__variantTemplates": {
+    "straight_east_bottom": { "base": { "model": "{baseStraightModel}", "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "weight": "{weights[index+1]}" } } },
+    "straight_west_bottom": { "base": { "model": "{baseStraightModel}", "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "straight_south_bottom": { "base": { "model": "{baseStraightModel}", "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "straight_north_bottom": { "base": { "model": "{baseStraightModel}", "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "straight_east_top": { "base": { "model": "{baseStraightModel}", "x": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "x": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "straight_west_top": { "base": { "model": "{baseStraightModel}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "straight_south_top": { "base": { "model": "{baseStraightModel}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "straight_north_top": { "base": { "model": "{baseStraightModel}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenStraightPrefix}{index}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "outer_right_east_bottom": { "base": { "model": "{baseOuterModel}", "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "weight": "{weights[index+1]}" } } },
+    "outer_right_west_bottom": { "base": { "model": "{baseOuterModel}", "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_right_south_bottom": { "base": { "model": "{baseOuterModel}", "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_right_north_bottom": { "base": { "model": "{baseOuterModel}", "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "outer_left_east_bottom": { "base": { "model": "{baseOuterModel}", "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_left_west_bottom": { "base": { "model": "{baseOuterModel}", "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_left_south_bottom": { "base": { "model": "{baseOuterModel}", "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "weight": "{weights[index+1]}" } } },
+    "outer_left_north_bottom": { "base": { "model": "{baseOuterModel}", "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "outer_right_east_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_right_west_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_right_south_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_right_north_top": { "base": { "model": "{baseOuterModel}", "x": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "outer_left_east_top": { "base": { "model": "{baseOuterModel}", "x": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_left_west_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_left_south_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "outer_left_north_top": { "base": { "model": "{baseOuterModel}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenOuterPrefix}{index}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "inner_right_east_bottom": { "base": { "model": "{baseInnerModel}", "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "weight": "{weights[index+1]}" } } },
+    "inner_right_west_bottom": { "base": { "model": "{baseInnerModel}", "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_right_south_bottom": { "base": { "model": "{baseInnerModel}", "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_right_north_bottom": { "base": { "model": "{baseInnerModel}", "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "inner_left_east_bottom": { "base": { "model": "{baseInnerModel}", "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_left_west_bottom": { "base": { "model": "{baseInnerModel}", "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_left_south_bottom": { "base": { "model": "{baseInnerModel}", "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "weight": "{weights[index+1]}" } } },
+    "inner_left_north_bottom": { "base": { "model": "{baseInnerModel}", "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "inner_right_east_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_right_west_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_right_south_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_right_north_top": { "base": { "model": "{baseInnerModel}", "x": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+
+    "inner_left_east_top": { "base": { "model": "{baseInnerModel}", "x": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_left_west_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 180, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_left_south_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 90, "uvlock": true, "weight": "{weights[index+1]}" } } },
+    "inner_left_north_top": { "base": { "model": "{baseInnerModel}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[0]}" }, "generated": { "from": 0, "to": 6, "template": { "model": "{brokenInnerPrefix}{index}", "x": 180, "y": 270, "uvlock": true, "weight": "{weights[index+1]}" } } }
+  }
+}

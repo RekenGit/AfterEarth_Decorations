@@ -14,6 +14,6 @@ public class AfterEarth_Decorations implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CustomItemGroups.registerModItemGroups();
-		CustomBlocks.registerModBlocks();
+		CustomBlocks.registerModBlocks(); //Was adding mod blocks to vanilla group "Building Blocks"
 	}
 }

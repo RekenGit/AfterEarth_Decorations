@@ -8,6 +8,7 @@ import net.minecraft.block.DoorBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.BlockTags;
 import online.reken.afterearth.deco.block.CustomBlocks;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,10 +37,16 @@ public class ModLootTableProvider extends FabricBlockLootTableProvider {
 //        addDrop(Andesite_Brick_Slab_Broken, slabDrops(Andesite_Brick_Slab_Broken));
 //        addDrop(Andesite_Brick_Door, doorDrops(Andesite_Brick_Door));
 
-        for (Block block : BRICK_BROKEN_FAMILY.all()) addTypedDrop(block);
-        for (Block block : ANDESITE_BRICK_FAMILY.all()) addTypedDrop(block);
-        for (Block block : QUARTZ_CHECKER_FAMILY.all()) addDrop(block);
-        for (Block block : QUARTZ_TILE_FAMILY.all()) addDrop(block);
+//        for (Block block : BRICK_BROKEN_FAMILY.all()) addTypedDrop(block);
+//        for (Block block : ANDESITE_BRICK_FAMILY.all()) addTypedDrop(block);
+//        for (Block block : GRANITE_BRICK_FAMILY.all()) addTypedDrop(block);
+//        for (Block block : DIORITE_BRICK_FAMILY.all()) addTypedDrop(block);
+//        for (Block block : QUARTZ_CHECKER_FAMILY.all()) addDrop(block);
+//        for (Block block : QUARTZ_TILE_FAMILY.all()) addDrop(block);
+//        for (Block block : STREET_LINE_BLACK_GRAVEL_FAMILY.all()) addDrop(block);
+//        for (Block block : STREET_LINE_GRAY_GRAVEL_FAMILY.all()) addDrop(block);
+
+        for (Block block : ALL_MOD_BLOCKS) addTypedDrop(block);
 
         addDrop(Test_Leaves, leavesDrops(Test_Leaves, Blocks.OAK_SAPLING, 0,09f));
 
