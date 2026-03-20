@@ -37,7 +37,8 @@ public class ModModelProvider2 extends FabricModelProvider {
 
     private static final List<IBlockFamily> STANDALONE_BLOCK_FAMILIES = List.of(
             STREET_LINE_BLACK_GRAVEL_FAMILY,
-            STREET_LINE_GRAY_GRAVEL_FAMILY
+            STREET_LINE_GRAY_GRAVEL_FAMILY,
+            CONTAINER_FAMILY
     );
 
     private static final List<IBlockFamily> STANDALONE_CUBE_FAMILIES = List.of(
@@ -158,13 +159,21 @@ public class ModModelProvider2 extends FabricModelProvider {
             return;
         }
 
+        String pilarTextureTop = baseBlockId.getPath();
+        String pilarTextureSide = blockId.getPath();
+        String pilarNamespaceTop = baseBlockId.getNamespace();
+        if (String.valueOf(block.getName()).contains("_pillar")){
+            pilarNamespaceTop = blockId.getNamespace();
+            pilarTextureTop = blockId.getPath().replace("_pillar", "_pillar_top");
+        }
+
         registerCustomLog(
                 generator,
                 block,
                 blockId.getNamespace(),
-                blockId.getPath(),
-                baseBlockId.getNamespace(),
-                baseBlockId.getPath()
+                pilarTextureSide,
+                pilarNamespaceTop,
+                pilarTextureTop
         );
     }
 

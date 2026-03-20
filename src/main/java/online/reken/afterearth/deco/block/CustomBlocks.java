@@ -123,6 +123,9 @@ public class CustomBlocks {
     public static final Block Scrap_Metal_Sheet_Stairs = registerStairs(CustomBlocks.Scrap_Metal_Sheet,"scrap_metal_sheet_stairs", AbstractBlock.Settings.copy(Scrap_Metal_Sheet));
     public static final Block Scrap_Metal_Sheet_Wall = registerCustomBlock("scrap_metal_sheet_wall", WallBlock::new, AbstractBlock.Settings.copy(Scrap_Metal_Sheet));
 
+    // container
+    public static final Block Container_Gray = registerCustomBlock("container_gray_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+
     ///Street
     public static final Block Street_Black_Gravel = registerBlock("street_black_gravel", AbstractBlock.Settings.copy(Blocks.BLACK_CONCRETE));
     public static final Block Street_Gray_Gravel = registerBlock("street_gray_gravel", AbstractBlock.Settings.copy(Blocks.GRAY_CONCRETE));
@@ -289,6 +292,14 @@ public class CustomBlocks {
             new int[]{35, 2, 3, 1, 2, 2, 4, 1},
             Scrap_Metal_Sheet,
             "scrap_metal_sheet"
+    );
+
+    /// CONTAINER
+    public static final BlockFamily CONTAINER_FAMILY = new BlockFamily(
+            new Block[]{
+                    Container_Gray
+            },
+            new Block[0]
     );
 
     /// QUARTZ_CHECKER
@@ -499,6 +510,7 @@ public class CustomBlocks {
         ALL_MOD_BLOCKS.addAll(List.of(EXPOSED_METAL_SHEET_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(WEATHERED_METAL_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(SCRAP_METAL_SHEET_FAMILY.all()));
+        ALL_MOD_BLOCKS.addAll(List.of(CONTAINER_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(QUARTZ_CHECKER_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(QUARTZ_TILE_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(STREET_LINE_BLACK_GRAVEL_FAMILY.all()));

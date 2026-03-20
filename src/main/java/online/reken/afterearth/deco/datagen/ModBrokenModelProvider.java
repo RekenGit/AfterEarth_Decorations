@@ -11,6 +11,7 @@ import net.minecraft.data.DataWriter;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeighted;
+import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeightedWithBase;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -48,8 +49,9 @@ public class ModBrokenModelProvider implements DataProvider {
     public CompletableFuture<?> run(DataWriter writer) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        for (IBlockFamily family : BROKEN_FAMILIES)
+        for (IBlockFamily family : BROKEN_FAMILIES) {
             futures.addAll(generateBlocksFamily(writer, family));
+        }
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -93,8 +95,8 @@ public class ModBrokenModelProvider implements DataProvider {
     private List<CompletableFuture<?>> generateCube(DataWriter writer, BrokenContext ctx) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        String baseModelId = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
-        String brokenModelPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
+        String baseModelId = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath();
+        String brokenModelPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath();
 
         futures.add(writeBlockstate(
                 writer,
@@ -102,10 +104,18 @@ public class ModBrokenModelProvider implements DataProvider {
                 createSimpleWeightedBlockStateJson(baseModelId, brokenModelPrefix, ctx.weights())
         ));
 
+        // base model without index
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath()),
+                createModelJson("minecraft:block/cube_all", ctx.texturePoolPrefix(), "all")
+        ));
+
+        // indexed models 0..6
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
-                i -> createModelJson("minecraft:block/cube_all", ctx.texturePrefix() + i, "all")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + i),
+                i -> createModelJson("minecraft:block/cube_all", ctx.texturePoolPrefix() + i, "all")
         ));
 
         futures.add(writeItem(
@@ -120,13 +130,13 @@ public class ModBrokenModelProvider implements DataProvider {
     private List<CompletableFuture<?>> generateSlab(DataWriter writer, BrokenContext ctx) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        String baseBottomModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
-        String baseTopModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_top";
-        String baseDoubleModel = ctx.baseNamespace() + ":block/" + slabDoubleBasePath(ctx.resultBlock());
+        String baseBottomModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath();
+        String baseTopModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_top";
+        String baseDoubleModel = ctx.fullBlockNamespace() + ":block/" + ctx.fullBlockPath();
 
-        String brokenBottomPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
-        String brokenTopPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_top";
-        String brokenDoublePrefix = ctx.texturePrefix();
+        String brokenBottomPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath();
+        String brokenTopPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_top";
+        String brokenDoublePrefix = ctx.texturePoolPrefix();
 
         futures.add(writeBlockstate(
                 writer,
@@ -139,16 +149,30 @@ public class ModBrokenModelProvider implements DataProvider {
                 )
         ));
 
+        // base models without index
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath()),
+                createModelJson("minecraft:block/slab", ctx.texturePoolPrefix(), "bottom", "top", "side")
+        ));
+
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_top"),
+                createModelJson("minecraft:block/slab_top", ctx.texturePoolPrefix(), "bottom", "top", "side")
+        ));
+
+        // indexed models 0..6
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
-                i -> createModelJson("minecraft:block/slab", ctx.texturePrefix() + i, "bottom", "top", "side")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + i),
+                i -> createModelJson("minecraft:block/slab", ctx.texturePoolPrefix() + i, "bottom", "top", "side")
         ));
 
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_top" + i),
-                i -> createModelJson("minecraft:block/slab_top", ctx.texturePrefix() + i, "bottom", "top", "side")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_top" + i),
+                i -> createModelJson("minecraft:block/slab_top", ctx.texturePoolPrefix() + i, "bottom", "top", "side")
         ));
 
         futures.add(writeItem(
@@ -163,13 +187,13 @@ public class ModBrokenModelProvider implements DataProvider {
     private List<CompletableFuture<?>> generateStairs(DataWriter writer, BrokenContext ctx) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        String baseStraightModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath();
-        String baseInnerModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_inner";
-        String baseOuterModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_outer";
+        String baseStraightModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath();
+        String baseInnerModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_inner";
+        String baseOuterModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_outer";
 
-        String brokenStraightPrefix = ctx.namespace() + ":block/" + ctx.resultPath();
-        String brokenInnerPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_inner";
-        String brokenOuterPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_outer";
+        String brokenStraightPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath();
+        String brokenInnerPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_inner";
+        String brokenOuterPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_outer";
 
         futures.add(writeBlockstate(
                 writer,
@@ -182,22 +206,42 @@ public class ModBrokenModelProvider implements DataProvider {
                 )
         ));
 
+        // base models without index
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath()),
+                createModelJson("minecraft:block/stairs", ctx.texturePoolPrefix(), "bottom", "top", "side")
+        ));
+
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_inner"),
+                createModelJson("minecraft:block/inner_stairs", ctx.texturePoolPrefix(), "bottom", "top", "side")
+        ));
+
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_outer"),
+                createModelJson("minecraft:block/outer_stairs", ctx.texturePoolPrefix(), "bottom", "top", "side")
+        ));
+
+        // indexed models 0..6
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + i),
-                i -> createModelJson("minecraft:block/stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + i),
+                i -> createModelJson("minecraft:block/stairs", ctx.texturePoolPrefix() + i, "bottom", "top", "side")
         ));
 
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_inner" + i),
-                i -> createModelJson("minecraft:block/inner_stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_inner" + i),
+                i -> createModelJson("minecraft:block/inner_stairs", ctx.texturePoolPrefix() + i, "bottom", "top", "side")
         ));
 
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_outer" + i),
-                i -> createModelJson("minecraft:block/outer_stairs", ctx.texturePrefix() + i, "bottom", "top", "side")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_outer" + i),
+                i -> createModelJson("minecraft:block/outer_stairs", ctx.texturePoolPrefix() + i, "bottom", "top", "side")
         ));
 
         futures.add(writeItem(
@@ -212,13 +256,13 @@ public class ModBrokenModelProvider implements DataProvider {
     private List<CompletableFuture<?>> generateWall(DataWriter writer, BrokenContext ctx) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        String basePostModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_post";
-        String baseSideModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_side";
-        String baseSideTallModel = ctx.counterpartNamespace() + ":block/" + ctx.counterpartPath() + "_side_tall";
+        String basePostModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_post";
+        String baseSideModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_side";
+        String baseSideTallModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath() + "_side_tall";
 
-        String brokenPostPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_post";
-        String brokenSidePrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_side";
-        String brokenSideTallPrefix = ctx.namespace() + ":block/" + ctx.resultPath() + "_side_tall";
+        String brokenPostPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_post";
+        String brokenSidePrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_side";
+        String brokenSideTallPrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_side_tall";
 
         futures.add(writeBlockstate(
                 writer,
@@ -231,35 +275,54 @@ public class ModBrokenModelProvider implements DataProvider {
                 )
         ));
 
-        futures.addAll(writeRepeatedModels(
+        // base models without index
+        futures.add(writeModel(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_post" + i),
-                i -> createModelJson("minecraft:block/template_wall_post", ctx.texturePrefix() + i, "wall")
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_post"),
+                createModelJson("minecraft:block/template_wall_post", ctx.texturePoolPrefix(), "wall")
+        ));
+
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_side"),
+                createModelJson("minecraft:block/template_wall_side", ctx.texturePoolPrefix(), "wall")
+        ));
+
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_side_tall"),
+                createModelJson("minecraft:block/template_wall_side_tall", ctx.texturePoolPrefix(), "wall")
         ));
 
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_side" + i),
-                i -> createModelJson("minecraft:block/template_wall_side", ctx.texturePrefix() + i, "wall")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_post" + i),
+                i -> createModelJson("minecraft:block/template_wall_post", ctx.texturePoolPrefix() + i, "wall")
         ));
 
         futures.addAll(writeRepeatedModels(
                 writer,
-                i -> Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_side_tall" + i),
-                i -> createModelJson("minecraft:block/template_wall_side_tall", ctx.texturePrefix() + i, "wall")
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_side" + i),
+                i -> createModelJson("minecraft:block/template_wall_side", ctx.texturePoolPrefix() + i, "wall")
         ));
 
-        Identifier inventoryModelId = Identifier.of(ctx.namespace(), "block/" + ctx.resultPath() + "_inventory");
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_side_tall" + i),
+                i -> createModelJson("minecraft:block/template_wall_side_tall", ctx.texturePoolPrefix() + i, "wall")
+        ));
+
+        Identifier inventoryModelId = Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + "_inventory");
         futures.add(writeModel(
                 writer,
                 inventoryModelId,
-                createModelJson("minecraft:block/wall_inventory", ctx.texturePrefix() + "0", "wall")
+                createModelJson("minecraft:block/wall_inventory", ctx.texturePoolPrefix() + "0", "wall")
         ));
 
         futures.add(writeItem(
                 writer,
                 ctx.blockId(),
-                createItemModelJson(ctx.namespace() + ":block/" + ctx.resultPath() + "_inventory")
+                createItemModelJson(ctx.namespace() + ":block/" + ctx.brokenBasePath() + "_inventory")
         ));
 
         return futures;
@@ -278,20 +341,12 @@ public class ModBrokenModelProvider implements DataProvider {
     }
 
     private void validateWeights(IBlockFamily family) {
-        if (family instanceof BlockFamilyWeighted){
-            if (((BlockFamilyWeighted) family).weights().length != EXPECTED_WEIGHT_COUNT) {
-                throw new IllegalArgumentException(
-                        "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
-                );
-            }
-        } else if (family instanceof BlockFamilyWeightedWithBase) {
-            if (((BlockFamilyWeightedWithBase) family).weights().length != EXPECTED_WEIGHT_COUNT) {
-                throw new IllegalArgumentException(
-                        "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
-                );
-            }
-        } else
-            throw  new IllegalArgumentException("Family " + family.getBaseBlock().getName() + " dont have weights set.");
+        int[] weights = getWeights(family);
+        if (weights.length != EXPECTED_WEIGHT_COUNT) {
+            throw new IllegalArgumentException(
+                    "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
+            );
+        }
     }
 
     private JsonObject createSimpleWeightedBlockStateJson(String baseModelId, String brokenModelPrefix, int[] weights) {
@@ -530,23 +585,6 @@ public class ModBrokenModelProvider implements DataProvider {
         return root;
     }
 
-    private String basePath(Block baseBlock) {
-        Identifier blockId = Registries.BLOCK.getId(baseBlock);
-        String path = blockId.getPath();
-
-        if (path.endsWith("_broken")) {
-            return path.substring(0, path.length() - "_broken".length());
-        }
-
-        return path;
-    }
-
-    private String slabDoubleBasePath(Block baseBlock) {
-        return basePath(baseBlock)
-                .replace("brick", "bricks")
-                .replace("_slab", "");
-    }
-
     private CompletableFuture<?> writeBlockstate(DataWriter writer, Identifier id, JsonObject json) {
         Path path = blockstatesPathResolver.resolveJson(id);
         return DataProvider.writeToPath(writer, json, path);
@@ -562,59 +600,17 @@ public class ModBrokenModelProvider implements DataProvider {
         return DataProvider.writeToPath(writer, json, path);
     }
 
-    private record BrokenContext(
-            Block resultBlock,
-            IBlockFamily family,
-            Identifier blockId,
-            String namespace,
-            String resultPath,
-            String basePath,
-            String baseNamespace,
-            String counterpartPath,
-            String counterpartNamespace,
-            String texturePrefix,
-            int[] weights
-    ) {
-        static BrokenContext of(Block resultBlock, IBlockFamily family) {
-            Identifier blockId = Registries.BLOCK.getId(resultBlock);
-            String namespace = blockId.getNamespace();
-            String resultPath = blockId.getPath();
-
-            Block familyBaseModel = family.getBaseBlock();
-            Identifier baseId = Registries.BLOCK.getId(familyBaseModel);
-
-            String basePath = baseId.getPath().endsWith("_broken")
-                    ? baseId.getPath().substring(0, baseId.getPath().length() - "_broken".length())
-                    : baseId.getPath();
-
-            String baseNamespace = baseId.getNamespace();
-
-            Block counterpartBlock = getNormalCounterpartStatic(resultBlock, family);
-            Identifier counterpartId = Registries.BLOCK.getId(counterpartBlock);
-
-            String counterpartPath = counterpartId.getPath();
-            String counterpartNamespace = counterpartId.getNamespace();
-
-            String texturePrefix = blockId.getNamespace() + ":block/" + getBrokenTexturePoolPathStatic(resultBlock, family);
-            int[] weights = getWeightsStatic(family);
-
-            return new BrokenContext(
-                    resultBlock,
-                    family,
-                    blockId,
-                    namespace,
-                    resultPath,
-                    basePath,
-                    baseNamespace,
-                    counterpartPath,
-                    counterpartNamespace,
-                    texturePrefix,
-                    weights
-            );
+    private static int[] getWeights(IBlockFamily family) {
+        if (family instanceof BlockFamilyWeighted weighted) {
+            return weighted.weights();
         }
+        if (family instanceof BlockFamilyWeightedWithBase weightedWithBase) {
+            return weightedWithBase.weights();
+        }
+        throw new IllegalArgumentException("Family " + family.getBaseBlock().getName() + " dont have weights set.");
     }
 
-    private static Block getNormalCounterpartStatic(Block brokenBlock, IBlockFamily family) {
+    private static Block getNormalCounterpart(Block brokenBlock, IBlockFamily family) {
         Block[] broken = family.broken();
         Block[] normal = family.normal();
 
@@ -636,25 +632,99 @@ public class ModBrokenModelProvider implements DataProvider {
             };
         }
 
+        if (family == SCRAP_METAL_SHEET_FAMILY) {
+            return switch (DatagenBlockKind.resolve(brokenBlock)) {
+                case CUBE -> Scrap_Metal_Sheet;
+                case SLAB -> Scrap_Metal_Sheet_Slab;
+                case STAIRS -> Scrap_Metal_Sheet_Stairs;
+                case WALL -> Scrap_Metal_Sheet_Wall;
+                default -> Scrap_Metal_Sheet;
+            };
+        }
+
         return family.getBaseBlock();
     }
 
-    private static String getBrokenTexturePoolPathStatic(Block brokenBlock, IBlockFamily family) {
+    private static String getBrokenTexturePoolPath(Block brokenBlock, IBlockFamily family) {
         if (family instanceof BlockFamilyWeightedWithBase weightedWithBase) {
             return weightedWithBase.texturePoolPath();
         }
 
-        Identifier brokenId = Registries.BLOCK.getId(brokenBlock);
-        return brokenId.getPath();
+        return Registries.BLOCK.getId(brokenBlock).getPath();
     }
 
-    private static int[] getWeightsStatic(IBlockFamily family) {
-        if (family instanceof BlockFamilyWeighted weighted) {
-            return weighted.weights();
+    private static String getFullBlockPath(Block brokenBlock, IBlockFamily family) {
+        if (family == BRICK_BROKEN_FAMILY) {
+            return "bricks";
         }
-        if (family instanceof BlockFamilyWeightedWithBase weightedWithBase) {
-            return weightedWithBase.weights();
+
+        Identifier id = Registries.BLOCK.getId(getNormalCounterpart(brokenBlock, family));
+        String path = id.getPath();
+
+        if (path.endsWith("_slab")) {
+            return path.substring(0, path.length() - "_slab".length())
+                    .replace("brick", "bricks");
         }
-        throw new IllegalArgumentException("Family " + family.getBaseBlock().getName() + " dont have weights set.");
+
+        return path;
+    }
+
+    private static String getFullBlockNamespace(Block brokenBlock, IBlockFamily family) {
+        if (family == BRICK_BROKEN_FAMILY) {
+            return "minecraft";
+        }
+
+        Identifier id = Registries.BLOCK.getId(getNormalCounterpart(brokenBlock, family));
+        return id.getNamespace();
+    }
+
+    private record BrokenContext(
+            Block resultBlock,
+            IBlockFamily family,
+            Identifier blockId,
+            String namespace,
+            String resultPath,
+            String cleanBasePath,
+            String cleanNamespace,
+            String brokenBasePath,
+            String texturePoolPrefix,
+            String fullBlockPath,
+            String fullBlockNamespace,
+            int[] weights
+    ) {
+        static BrokenContext of(Block resultBlock, IBlockFamily family) {
+            Identifier blockId = Registries.BLOCK.getId(resultBlock);
+            String namespace = blockId.getNamespace();
+            String resultPath = blockId.getPath();
+
+            Block cleanBlock = getNormalCounterpart(resultBlock, family);
+            Identifier cleanId = Registries.BLOCK.getId(cleanBlock);
+
+            String cleanBasePath = cleanId.getPath();
+            String cleanNamespace = cleanId.getNamespace();
+
+            String brokenBasePath = blockId.getPath();
+            String texturePoolPrefix = blockId.getNamespace() + ":block/" + getBrokenTexturePoolPath(resultBlock, family);
+
+            String fullBlockPath = getFullBlockPath(resultBlock, family);
+            String fullBlockNamespace = getFullBlockNamespace(resultBlock, family);
+
+            int[] weights = getWeights(family);
+
+            return new BrokenContext(
+                    resultBlock,
+                    family,
+                    blockId,
+                    namespace,
+                    resultPath,
+                    cleanBasePath,
+                    cleanNamespace,
+                    brokenBasePath,
+                    texturePoolPrefix,
+                    fullBlockPath,
+                    fullBlockNamespace,
+                    weights
+            );
+        }
     }
 }

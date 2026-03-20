@@ -49,6 +49,7 @@ public class CustomItemGroups {
                         for (Block block : EXPOSED_METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : WEATHERED_METAL_FAMILY.all()) entries.add(block);
                         for (Block block : SCRAP_METAL_SHEET_FAMILY.all()) entries.add(block);
+                        for (Block block : CONTAINER_FAMILY.all()) entries.add(block);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
