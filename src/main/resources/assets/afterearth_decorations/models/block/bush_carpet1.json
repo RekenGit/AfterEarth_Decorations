@@ -1,0 +1,7 @@
+{
+	"parent": "afterearth_decorations:block/bush_carpet",
+	"textures": {
+		"1": "afterearth_decorations:block/bush_carpet1",
+		"2": "afterearth_decorations:block/bush_carpet_top1"
+	}
+}

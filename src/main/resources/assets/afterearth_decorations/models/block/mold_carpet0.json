@@ -1,0 +1,7 @@
+{
+	"parent": "afterearth_decorations:block/mold_carpet",
+	"textures": {
+		"1": "afterearth_decorations:block/mold_carpet0",
+		"2": "afterearth_decorations:block/mold_carpet_top0"
+	}
+}

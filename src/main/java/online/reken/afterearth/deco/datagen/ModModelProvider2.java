@@ -3,6 +3,7 @@ package online.reken.afterearth.deco.datagen;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.block.Block;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.BlockStateVariantMap;
 import net.minecraft.client.data.ItemModelGenerator;
@@ -19,6 +20,8 @@ import net.minecraft.util.math.AxisRotation;
 import net.minecraft.util.math.Direction;
 import online.reken.afterearth.deco.AfterEarth_Decorations;
 import online.reken.afterearth.deco.block.CustomBlocks.IBlockFamily;
+import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
+import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
 import java.util.List;
 
@@ -65,6 +68,8 @@ public class ModModelProvider2 extends FabricModelProvider {
         for (IBlockFamily family : STANDALONE_BLOCK_FAMILIES) {
             registerStandaloneFamily(generator, family);
         }
+
+        generator.registerNorthDefaultHorizontalRotatable(Razor_Wire);
     }
 
     @Override
@@ -94,6 +99,7 @@ public class ModModelProvider2 extends FabricModelProvider {
                             + " for block " + ModelIds.getBlockModelId(block)
                             + ". Move it to a texture-pool family or add custom standalone handling."
             );
+            case VERTICAL_SLAB -> registerVerticalSlab(generator, family, block);
             case PILLAR -> registerPillar(generator, family, block);
             case GLAZED_TERRACOTTA -> registerGlazedTerracotta(generator, block);
             case TRANSPARENT -> pendingGlassBlock = block;
@@ -127,6 +133,7 @@ public class ModModelProvider2 extends FabricModelProvider {
     ) {
         switch (DatagenBlockKind.resolve(block)) {
             case SLAB -> pool.slab(block);
+            case VERTICAL_SLAB -> registerVerticalSlab(generator, family, block);
             case STAIRS -> pool.stairs(block);
             case WALL -> pool.wall(block);
             case CUBE -> generator.registerSimpleCubeAll(block);
@@ -251,5 +258,95 @@ public class ModModelProvider2 extends FabricModelProvider {
         );
 
         generator.registerParentedItemModel(carpet, carpetModel);
+    }
+
+    public static void registerVerticalSlab(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
+        Identifier baseBlockId = ModelIds.getBlockModelId(family.getBaseBlock());
+        Identifier blockId = ModelIds.getBlockModelId(block);
+
+        TextureMap textures = new TextureMap()
+                .put(TextureKey.BOTTOM, Identifier.of(baseBlockId.getNamespace(), baseBlockId.getPath()))
+                .put(TextureKey.TOP, Identifier.of(baseBlockId.getNamespace(), baseBlockId.getPath()))
+                .put(TextureKey.SIDE, Identifier.of(baseBlockId.getNamespace(), baseBlockId.getPath()))
+                .put(TextureKey.PARTICLE, Identifier.of(baseBlockId.getNamespace(), baseBlockId.getPath()))
+                .put(TextureKey.ALL, Identifier.of(baseBlockId.getNamespace(), baseBlockId.getPath()));
+
+        Identifier singleModel = Identifier.of(blockId.getNamespace(), blockId.getPath());
+        Identifier doubleModel = Identifier.of(blockId.getNamespace(), blockId.getPath().replace("_slab", ""));
+
+        generator.modelCollector.accept(singleModel, () -> com.google.gson.JsonParser.parseString("""
+            {
+              "parent": "block/block",
+              "textures": {
+                "bottom": "%s:%s",
+                "top": "%s:%s",
+                "side": "%s:%s",
+                "particle": "%s:%s"
+              },
+              "elements": [
+                {
+                  "from": [0, 0, 0],
+                  "to": [16, 16, 8],
+                  "faces": {
+                    "down":  { "texture": "#bottom" },
+                    "up":    { "texture": "#top" },
+                    "north": { "texture": "#side" },
+                    "south": { "texture": "#side" },
+                    "west":  { "texture": "#side" },
+                    "east":  { "texture": "#side" }
+                  }
+                }
+              ]
+            }
+            """.formatted(
+                baseBlockId.getNamespace(), baseBlockId.getPath(),
+                baseBlockId.getNamespace(), baseBlockId.getPath(),
+                baseBlockId.getNamespace(), baseBlockId.getPath(),
+                baseBlockId.getNamespace(), baseBlockId.getPath()
+        )).getAsJsonObject());
+
+        Models.CUBE_ALL.upload(doubleModel, textures, generator.modelCollector);
+
+        WeightedVariant northSingle = BlockStateModelGenerator.createWeightedVariant(singleModel);
+        WeightedVariant eastSingle  = BlockStateModelGenerator.createWeightedVariant(singleModel)
+                .apply(v -> v.withRotationY(AxisRotation.R90));
+        WeightedVariant southSingle = BlockStateModelGenerator.createWeightedVariant(singleModel)
+                .apply(v -> v.withRotationY(AxisRotation.R180));
+        WeightedVariant westSingle  = BlockStateModelGenerator.createWeightedVariant(singleModel)
+                .apply(v -> v.withRotationY(AxisRotation.R270));
+
+        WeightedVariant doubleVariant = BlockStateModelGenerator.createWeightedVariant(doubleModel);
+
+        generator.blockStateCollector.accept(
+                VariantsBlockModelDefinitionCreator.of(block)
+                        .with(
+                                BlockStateVariantMap.models(
+                                                HorizontalFacingBlock.FACING,
+                                                VerticalSlabBlock.TYPE,
+                                                Properties.WATERLOGGED
+                                        )
+                                        .register(Direction.NORTH, VerticalSlabType.SINGLE, false, northSingle)
+                                        .register(Direction.EAST,  VerticalSlabType.SINGLE, false, eastSingle)
+                                        .register(Direction.SOUTH, VerticalSlabType.SINGLE, false, southSingle)
+                                        .register(Direction.WEST,  VerticalSlabType.SINGLE, false, westSingle)
+
+                                        .register(Direction.NORTH, VerticalSlabType.SINGLE, true, northSingle)
+                                        .register(Direction.EAST,  VerticalSlabType.SINGLE, true, eastSingle)
+                                        .register(Direction.SOUTH, VerticalSlabType.SINGLE, true, southSingle)
+                                        .register(Direction.WEST,  VerticalSlabType.SINGLE, true, westSingle)
+
+                                        .register(Direction.NORTH, VerticalSlabType.DOUBLE, false, doubleVariant)
+                                        .register(Direction.EAST,  VerticalSlabType.DOUBLE, false, doubleVariant)
+                                        .register(Direction.SOUTH, VerticalSlabType.DOUBLE, false, doubleVariant)
+                                        .register(Direction.WEST,  VerticalSlabType.DOUBLE, false, doubleVariant)
+
+                                        .register(Direction.NORTH, VerticalSlabType.DOUBLE, true, doubleVariant)
+                                        .register(Direction.EAST,  VerticalSlabType.DOUBLE, true, doubleVariant)
+                                        .register(Direction.SOUTH, VerticalSlabType.DOUBLE, true, doubleVariant)
+                                        .register(Direction.WEST,  VerticalSlabType.DOUBLE, true, doubleVariant)
+                        )
+        );
+
+        generator.registerParentedItemModel(block, singleModel);
     }
 }

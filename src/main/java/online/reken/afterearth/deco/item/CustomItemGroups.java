@@ -48,8 +48,10 @@ public class CustomItemGroups {
                         for (Block block : METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : EXPOSED_METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : WEATHERED_METAL_FAMILY.all()) entries.add(block);
+                        for (Block block : RUSTED_METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : SCRAP_METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : CONTAINER_FAMILY.all()) entries.add(block);
+                        entries.add(Razor_Wire);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
@@ -61,6 +63,16 @@ public class CustomItemGroups {
                         //entries.add(CustomBlocks.Quartz_Checker_Black);
                         for (Block block : QUARTZ_CHECKER_FAMILY.all()) entries.add(block);
                         for (Block block : QUARTZ_TILE_FAMILY.all()) entries.add(block);
+                    }).build());
+
+    public  static final ItemGroup Nature_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,
+            Identifier.of(AfterEarth_Decorations.MOD_ID, "nature_decoration_items"),
+            FabricItemGroup.builder()
+                    .icon(() -> new ItemStack(Bush_Carpet))
+                    .displayName(Text.translatable("itemgroup.afterearth_decorations.nature_decoration_items"))
+                    .entries((displayContext, entries) -> {
+                        entries.add(Bush_Carpet);
+                        entries.add(Mold_Carpet);
                     }).build());
 
     public static void registerModItemGroups() {

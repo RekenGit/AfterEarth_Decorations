@@ -1,12 +1,11 @@
 package online.reken.afterearth.deco.block;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -17,8 +16,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import online.reken.afterearth.deco.AfterEarth_Decorations;
+import online.reken.afterearth.deco.block.custom.RazorWireBlock;
+import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
 
-import javax.lang.model.type.ArrayType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,6 +30,7 @@ public class CustomBlocks {
             .mapColor(MapColor.BLUE).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(2.0F, 6.0F)
             .nonOpaque().solidBlock(Blocks::never).suffocates(Blocks::never).blockVision(Blocks::never));
     public static final Block Test_Slab = registerCustomBlock("test_slab", SlabBlock::new, AbstractBlock.Settings.copy(Test_Block));
+    public static final Block Test_Slab_Vertical = registerCustomBlock("test_slab_vertical", VerticalSlabBlock::new, AbstractBlock.Settings.copy(Test_Block));
     public static final Block Test_Stairs = registerStairs(CustomBlocks.Test_Block,"test_stairs", AbstractBlock.Settings.copy(Test_Block));
     public static final Block Test_Wall = registerCustomBlock("test_wall", WallBlock::new, AbstractBlock.Settings.copy(Test_Block));
     public static final Block Test_Pillar = registerCustomBlock("test_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Test_Block));
@@ -118,13 +119,51 @@ public class CustomBlocks {
     public static final Block Weathered_Metal_Sheet_Slab = registerCustomBlock("weathered_metal_sheet_slab", SlabBlock::new, AbstractBlock.Settings.copy(Weathered_Metal_Sheet));
     public static final Block Weathered_Metal_Sheet_Stairs = registerStairs(CustomBlocks.Weathered_Metal_Sheet,"weathered_metal_sheet_stairs", AbstractBlock.Settings.copy(Weathered_Metal_Sheet));
     public static final Block Weathered_Metal_Sheet_Wall = registerCustomBlock("weathered_metal_sheet_wall", WallBlock::new, AbstractBlock.Settings.copy(Weathered_Metal_Sheet));
-    public static final Block Scrap_Metal_Sheet = registerBlock("scrap_metal_sheet", AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Rusted_Metal_Sheet = registerBlock("rusted_metal_sheet", AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Rusted_Metal_Sheet_Slab = registerCustomBlock("rusted_metal_sheet_slab", SlabBlock::new, AbstractBlock.Settings.copy(Rusted_Metal_Sheet));
+    public static final Block Rusted_Metal_Sheet_Stairs = registerStairs(CustomBlocks.Rusted_Metal_Sheet,"rusted_metal_sheet_stairs", AbstractBlock.Settings.copy(Rusted_Metal_Sheet));
+    public static final Block Rusted_Metal_Sheet_Wall = registerCustomBlock("rusted_metal_sheet_wall", WallBlock::new, AbstractBlock.Settings.copy(Rusted_Metal_Sheet));
+    public static final Block Scrap_Metal_Sheet = registerBlock("scrap_metal_sheet", AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
     public static final Block Scrap_Metal_Sheet_Slab = registerCustomBlock("scrap_metal_sheet_slab", SlabBlock::new, AbstractBlock.Settings.copy(Scrap_Metal_Sheet));
     public static final Block Scrap_Metal_Sheet_Stairs = registerStairs(CustomBlocks.Scrap_Metal_Sheet,"scrap_metal_sheet_stairs", AbstractBlock.Settings.copy(Scrap_Metal_Sheet));
     public static final Block Scrap_Metal_Sheet_Wall = registerCustomBlock("scrap_metal_sheet_wall", WallBlock::new, AbstractBlock.Settings.copy(Scrap_Metal_Sheet));
 
     // container
     public static final Block Container_Gray = registerCustomBlock("container_gray_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Darkgray = registerCustomBlock("container_darkgray_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Blue = registerCustomBlock("container_blue_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Red = registerCustomBlock("container_red_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Yellow = registerCustomBlock("container_yellow_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Green = registerCustomBlock("container_green_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Brown = registerCustomBlock("container_brown_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Purple = registerCustomBlock("container_purple_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block Container_Lightblue = registerCustomBlock("container_lightblue_pillar", PillarBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+
+    // razor_wire
+    public static final Block Razor_Wire = registerCustomBlock("razor_wire", RazorWireBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BARS)
+            .solid().noCollision().pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+
+
+    /// Nature
+    // bush_carpet
+    public static final Block Bush_Carpet = registerCustomBlock("bush_carpet", GlowLichenBlock::new, AbstractBlock.Settings.copy(Blocks.LEAF_LITTER)
+            .mapColor(MapColor.IRON_GRAY)
+            .replaceable()
+            .noCollision()
+            .strength(0.2F)
+            .sounds(BlockSoundGroup.GRASS)
+            .burnable()
+            .pistonBehavior(PistonBehavior.DESTROY));
+
+    // mold_carpet
+    public static final Block Mold_Carpet = registerCustomBlock("mold_carpet", GlowLichenBlock::new, AbstractBlock.Settings.copy(Blocks.LEAF_LITTER)
+            .mapColor(MapColor.IRON_GRAY)
+            .replaceable()
+            .noCollision()
+            .strength(0.2F)
+            .sounds(BlockSoundGroup.GRASS)
+            .burnable()
+            .pistonBehavior(PistonBehavior.DESTROY));
 
     ///Street
     public static final Block Street_Black_Gravel = registerBlock("street_black_gravel", AbstractBlock.Settings.copy(Blocks.BLACK_CONCRETE));
@@ -281,6 +320,19 @@ public class CustomBlocks {
             },
             new Block[0]
     );
+    public static final BlockFamilyWeightedWithBase RUSTED_METAL_SHEET_FAMILY = new BlockFamilyWeightedWithBase(
+            new Block[0],
+            new Block[]{
+                    Rusted_Metal_Sheet,
+                    Rusted_Metal_Sheet_Slab,
+                    Rusted_Metal_Sheet_Stairs,
+                    Rusted_Metal_Sheet_Wall
+            },
+
+            new int[]{35, 2, 3, 1, 2, 2, 4, 1},
+            Rusted_Metal_Sheet,
+            "rusted_metal_sheet"
+    );
     public static final BlockFamilyWeightedWithBase SCRAP_METAL_SHEET_FAMILY = new BlockFamilyWeightedWithBase(
             new Block[0],
             new Block[]{
@@ -289,7 +341,7 @@ public class CustomBlocks {
                     Scrap_Metal_Sheet_Stairs,
                     Scrap_Metal_Sheet_Wall
             },
-            new int[]{35, 2, 3, 1, 2, 2, 4, 1},
+            new int[]{10, 10, 3, 5, 1, 1, 4, 10},
             Scrap_Metal_Sheet,
             "scrap_metal_sheet"
     );
@@ -297,7 +349,15 @@ public class CustomBlocks {
     /// CONTAINER
     public static final BlockFamily CONTAINER_FAMILY = new BlockFamily(
             new Block[]{
-                    Container_Gray
+                    Container_Gray,
+                    Container_Darkgray,
+                    Container_Brown,
+                    Container_Red,
+                    Container_Yellow,
+                    Container_Green,
+                    Container_Lightblue,
+                    Container_Blue,
+                    Container_Purple
             },
             new Block[0]
     );
@@ -305,20 +365,20 @@ public class CustomBlocks {
     /// QUARTZ_CHECKER
     public static final BlockFamilyWeighted QUARTZ_CHECKER_FAMILY = new BlockFamilyWeighted(
             new Block[]{
-                    CustomBlocks.Quartz_Checker_Black,
-                    CustomBlocks.Quartz_Checker_Black_Yellow,
-                    CustomBlocks.Quartz_Checker_Blue,
-                    CustomBlocks.Quartz_Checker_Brown,
                     CustomBlocks.Quartz_Checker_Gray,
-                    CustomBlocks.Quartz_Checker_Green
+                    CustomBlocks.Quartz_Checker_Black,
+                    CustomBlocks.Quartz_Checker_Brown,
+                    CustomBlocks.Quartz_Checker_Green,
+                    CustomBlocks.Quartz_Checker_Blue,
+                    CustomBlocks.Quartz_Checker_Black_Yellow
             },
             new Block[]{
-                    CustomBlocks.Quartz_Checker_Black_Broken,
-                    CustomBlocks.Quartz_Checker_Black_Yellow_Broken,
-                    CustomBlocks.Quartz_Checker_Blue_Broken,
-                    CustomBlocks.Quartz_Checker_Brown_Broken,
                     CustomBlocks.Quartz_Checker_Gray_Broken,
-                    CustomBlocks.Quartz_Checker_Green_Broken
+                    CustomBlocks.Quartz_Checker_Black_Broken,
+                    CustomBlocks.Quartz_Checker_Brown_Broken,
+                    CustomBlocks.Quartz_Checker_Green_Broken,
+                    CustomBlocks.Quartz_Checker_Blue_Broken,
+                    CustomBlocks.Quartz_Checker_Black_Yellow_Broken
             },
             new int[]{5, 4, 4, 1, 4, 4, 2, 1},
             true
@@ -327,20 +387,20 @@ public class CustomBlocks {
     /// QUARTZ_TILE
     public static final BlockFamilyWeighted QUARTZ_TILE_FAMILY = new BlockFamilyWeighted(
             new Block[]{
+                    CustomBlocks.Quartz_Tile_White,
                     CustomBlocks.Quartz_Tile_Black,
-                    CustomBlocks.Quartz_Tile_Blue,
-                    CustomBlocks.Quartz_Tile_Purple,
                     CustomBlocks.Quartz_Tile_Orange,
                     CustomBlocks.Quartz_Tile_Green,
-                    CustomBlocks.Quartz_Tile_White
+                    CustomBlocks.Quartz_Tile_Blue,
+                    CustomBlocks.Quartz_Tile_Purple,
             },
             new Block[]{
+                    CustomBlocks.Quartz_Tile_White_Broken,
                     CustomBlocks.Quartz_Tile_Black_Broken,
-                    CustomBlocks.Quartz_Tile_Blue_Broken,
-                    CustomBlocks.Quartz_Tile_Purple_Broken,
                     CustomBlocks.Quartz_Tile_Orange_Broken,
                     CustomBlocks.Quartz_Tile_Green_Broken,
-                    CustomBlocks.Quartz_Tile_White_Broken
+                    CustomBlocks.Quartz_Tile_Blue_Broken,
+                    CustomBlocks.Quartz_Tile_Purple_Broken,
             },
             new int[]{5, 4, 4, 4, 4, 3, 3, 1},
             true
@@ -350,29 +410,29 @@ public class CustomBlocks {
     public static final BlockFamilyWithBase STREET_LINE_BLACK_GRAVEL_FAMILY = new BlockFamilyWithBase(
             new Block[]{
                     Street_Black_Gravel,
-                    Street_Black_Gravel_Yellow_Diagonal_Lines,
+                    Street_Black_Gravel_Yellow_Line,
+                    Street_Black_Gravel_Yellow_Line_Dashed,
+                    Street_Black_Gravel_Yellow_Line_Thick,
+                    Street_Black_Gravel_Yellow_Line_Thick_Dashed,
                     Street_Black_Gravel_Yellow_Double_Line,
                     Street_Black_Gravel_Yellow_Double_Line_Dashed,
                     Street_Black_Gravel_Yellow_Double_Line_Dashed_Long,
                     Street_Black_Gravel_Yellow_Line_Cross,
+                    Street_Black_Gravel_Yellow_Diagonal_Lines,
                     Street_Black_Gravel_Yellow_Line_Stop,
                     Street_Black_Gravel_Yellow_Line_Stop_Dashed,
-                    Street_Black_Gravel_Yellow_Line_Thick,
-                    Street_Black_Gravel_Yellow_Line_Thick_Dashed,
-                    Street_Black_Gravel_Yellow_Line,
-                    Street_Black_Gravel_Yellow_Line_Dashed,
                     Street_Black_Gravel_Yellow_Line_Triangles,
-                    Street_Black_Gravel_White_Diagonal_Lines,
+                    Street_Black_Gravel_White_Line,
+                    Street_Black_Gravel_White_Line_Dashed,
+                    Street_Black_Gravel_White_Line_Thick,
+                    Street_Black_Gravel_White_Line_Thick_Dashed,
                     Street_Black_Gravel_White_Double_Line,
                     Street_Black_Gravel_White_Double_Line_Dashed,
                     Street_Black_Gravel_White_Double_Line_Dashed_Long,
                     Street_Black_Gravel_White_Line_Cross,
+                    Street_Black_Gravel_White_Diagonal_Lines,
                     Street_Black_Gravel_White_Line_Stop,
                     Street_Black_Gravel_White_Line_Stop_Dashed,
-                    Street_Black_Gravel_White_Line_Thick,
-                    Street_Black_Gravel_White_Line_Thick_Dashed,
-                    Street_Black_Gravel_White_Line,
-                    Street_Black_Gravel_White_Line_Dashed,
                     Street_Black_Gravel_White_Line_Triangles
             },
             new Block[0],
@@ -383,29 +443,29 @@ public class CustomBlocks {
     public static final BlockFamilyWithBase STREET_LINE_GRAY_GRAVEL_FAMILY = new BlockFamilyWithBase(
             new Block[]{
                     Street_Gray_Gravel,
-                    Street_Gray_Gravel_Yellow_Diagonal_Lines,
+                    Street_Gray_Gravel_Yellow_Line,
+                    Street_Gray_Gravel_Yellow_Line_Dashed,
+                    Street_Gray_Gravel_Yellow_Line_Thick,
+                    Street_Gray_Gravel_Yellow_Line_Thick_Dashed,
                     Street_Gray_Gravel_Yellow_Double_Line,
                     Street_Gray_Gravel_Yellow_Double_Line_Dashed,
                     Street_Gray_Gravel_Yellow_Double_Line_Dashed_Long,
                     Street_Gray_Gravel_Yellow_Line_Cross,
+                    Street_Gray_Gravel_Yellow_Diagonal_Lines,
                     Street_Gray_Gravel_Yellow_Line_Stop,
                     Street_Gray_Gravel_Yellow_Line_Stop_Dashed,
-                    Street_Gray_Gravel_Yellow_Line_Thick,
-                    Street_Gray_Gravel_Yellow_Line_Thick_Dashed,
-                    Street_Gray_Gravel_Yellow_Line,
-                    Street_Gray_Gravel_Yellow_Line_Dashed,
                     Street_Gray_Gravel_Yellow_Line_Triangles,
-                    Street_Gray_Gravel_White_Diagonal_Lines,
+                    Street_Gray_Gravel_White_Line,
+                    Street_Gray_Gravel_White_Line_Dashed,
+                    Street_Gray_Gravel_White_Line_Thick,
+                    Street_Gray_Gravel_White_Line_Thick_Dashed,
                     Street_Gray_Gravel_White_Double_Line,
                     Street_Gray_Gravel_White_Double_Line_Dashed,
                     Street_Gray_Gravel_White_Double_Line_Dashed_Long,
                     Street_Gray_Gravel_White_Line_Cross,
+                    Street_Gray_Gravel_White_Diagonal_Lines,
                     Street_Gray_Gravel_White_Line_Stop,
                     Street_Gray_Gravel_White_Line_Stop_Dashed,
-                    Street_Gray_Gravel_White_Line_Thick,
-                    Street_Gray_Gravel_White_Line_Thick_Dashed,
-                    Street_Gray_Gravel_White_Line,
-                    Street_Gray_Gravel_White_Line_Dashed,
                     Street_Gray_Gravel_White_Line_Triangles
             },
             new Block[0],
@@ -417,6 +477,7 @@ public class CustomBlocks {
             new Block[]{
                     CustomBlocks.Test_Block,
                     CustomBlocks.Test_Slab,
+                    CustomBlocks.Test_Slab_Vertical,
                     CustomBlocks.Test_Stairs,
                     CustomBlocks.Test_Wall,
                     CustomBlocks.Test_Pillar,
@@ -509,6 +570,7 @@ public class CustomBlocks {
         ALL_MOD_BLOCKS.addAll(List.of(METAL_SHEET_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(EXPOSED_METAL_SHEET_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(WEATHERED_METAL_FAMILY.all()));
+        ALL_MOD_BLOCKS.addAll(List.of(RUSTED_METAL_SHEET_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(SCRAP_METAL_SHEET_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(CONTAINER_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(QUARTZ_CHECKER_FAMILY.all()));
@@ -516,6 +578,9 @@ public class CustomBlocks {
         ALL_MOD_BLOCKS.addAll(List.of(STREET_LINE_BLACK_GRAVEL_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(STREET_LINE_GRAY_GRAVEL_FAMILY.all()));
         ALL_MOD_BLOCKS.addAll(List.of(TEST_FAMILY.all()));
+        ALL_MOD_BLOCKS.add(Bush_Carpet);
+        ALL_MOD_BLOCKS.add(Mold_Carpet);
+        ALL_MOD_BLOCKS.add(Razor_Wire);
 
         //Adding new blocks to the game
 //        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {

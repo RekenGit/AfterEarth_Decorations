@@ -32,6 +32,7 @@ public class ModBrokenModelProvider implements DataProvider {
             DIORITE_BRICK_FAMILY,
             QUARTZ_CHECKER_FAMILY,
             QUARTZ_TILE_FAMILY,
+            RUSTED_METAL_SHEET_FAMILY,
             SCRAP_METAL_SHEET_FAMILY
     );
 
@@ -629,6 +630,16 @@ public class ModBrokenModelProvider implements DataProvider {
                 case STAIRS -> Blocks.BRICK_STAIRS;
                 case WALL -> Blocks.BRICK_WALL;
                 default -> Blocks.BRICKS;
+            };
+        }
+
+        if (family == RUSTED_METAL_SHEET_FAMILY) {
+            return switch (DatagenBlockKind.resolve(brokenBlock)) {
+                case CUBE -> Rusted_Metal_Sheet;
+                case SLAB -> Rusted_Metal_Sheet_Slab;
+                case STAIRS -> Rusted_Metal_Sheet_Stairs;
+                case WALL -> Rusted_Metal_Sheet_Wall;
+                default -> Rusted_Metal_Sheet;
             };
         }
 

@@ -1,0 +1,154 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet"},
+        {"model": "afterearth_decorations:block/bush_carpet0"},
+        {"model": "afterearth_decorations:block/bush_carpet1"}
+      ],
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet"},
+        {"model": "afterearth_decorations:block/bush_carpet0"},
+        {"model": "afterearth_decorations:block/bush_carpet1"}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 90},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 90},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 90}
+      ],
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 90},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 90},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 90}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 180},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 180},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 180}
+      ],
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 180},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 180},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 180}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 270},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 270},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 270}
+      ],
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","y": 270},
+        {"model": "afterearth_decorations:block/bush_carpet0","y": 270},
+        {"model": "afterearth_decorations:block/bush_carpet1","y": 270}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","x": 270},
+        {"model": "afterearth_decorations:block/bush_carpet0","x": 270},
+        {"model": "afterearth_decorations:block/bush_carpet1","x": 270}
+      ],
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","x": 270},
+        {"model": "afterearth_decorations:block/bush_carpet0","x": 270},
+        {"model": "afterearth_decorations:block/bush_carpet1","x": 270}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","x": 90},
+        {"model": "afterearth_decorations:block/bush_carpet0","x": 90},
+        {"model": "afterearth_decorations:block/bush_carpet1","x": 90}
+      ],
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": [
+        {"model": "afterearth_decorations:block/bush_carpet","x": 90},
+        {"model": "afterearth_decorations:block/bush_carpet0","x": 90},
+        {"model": "afterearth_decorations:block/bush_carpet1","x": 90}
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    }
+  ]
+}

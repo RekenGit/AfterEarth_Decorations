@@ -12,10 +12,13 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.WallBlock;
+import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
+import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
 public enum DatagenBlockKind {
     CUBE,
     SLAB,
+    VERTICAL_SLAB,
     STAIRS,
     WALL,
     PILLAR,
@@ -29,6 +32,7 @@ public enum DatagenBlockKind {
 
     public static DatagenBlockKind resolve(Block block) {
         if (block instanceof SlabBlock) return SLAB;
+        if (block instanceof VerticalSlabBlock) return VERTICAL_SLAB;
         if (block instanceof StairsBlock) return STAIRS;
         if (block instanceof WallBlock) return WALL;
         if (block instanceof PillarBlock) return PILLAR;
@@ -51,7 +55,7 @@ public enum DatagenBlockKind {
 
     public boolean usesCubeTexturePool() {
         return switch (this) {
-            case CUBE, SLAB, STAIRS, WALL -> true;
+            case CUBE, SLAB, VERTICAL_SLAB, STAIRS, WALL -> true;
             default -> false;
         };
     }
