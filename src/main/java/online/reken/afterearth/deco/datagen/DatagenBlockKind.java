@@ -48,7 +48,7 @@ public enum DatagenBlockKind {
 
     public boolean supportsBrokenWeightedGeneration() {
         return switch (this) {
-            case CUBE, SLAB, STAIRS, WALL -> true;
+            case CUBE, SLAB, VERTICAL_SLAB, STAIRS, WALL -> true;
             default -> false;
         };
     }

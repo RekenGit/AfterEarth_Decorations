@@ -10,8 +10,13 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.Direction;
+import online.reken.afterearth.deco.block.CustomBlocks;
 import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeighted;
 import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeightedWithBase;
+import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
+import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -64,6 +69,7 @@ public class ModBrokenModelProvider implements DataProvider {
 
     private List<CompletableFuture<?>> generateBlocksFamily(DataWriter writer, IBlockFamily family) {
         validateWeights(family);
+        validateFamilyStructure(family);
 
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (Block block : family.broken()) {
@@ -87,6 +93,7 @@ public class ModBrokenModelProvider implements DataProvider {
         return switch (kind) {
             case CUBE -> generateCube(writer, ctx);
             case SLAB -> generateSlab(writer, ctx);
+            case VERTICAL_SLAB -> generateVerticalSlab(writer, ctx);
             case STAIRS -> generateStairs(writer, ctx);
             case WALL -> generateWall(writer, ctx);
             default -> throw new IllegalStateException("Unexpected value: " + kind);
@@ -183,6 +190,160 @@ public class ModBrokenModelProvider implements DataProvider {
         ));
 
         return futures;
+    }
+
+    private static String getBrokenFullBlockPath(String brokenVariantPath) {
+        String path = brokenVariantPath;
+
+        path = path.replace("_slab_vertical_broken", "_broken");
+        path = path.replace("_slab_broken", "_broken");
+        path = path.replace("_stairs_broken", "_broken");
+        path = path.replace("_wall_broken", "_broken");
+
+        path = path.replace("brick_broken", "bricks_broken");
+        path = path.replace("tile_broken", "tiles_broken");
+
+        return path;
+    }
+
+    private List<CompletableFuture<?>> generateVerticalSlab(DataWriter writer, BrokenContext ctx) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
+        String baseSingleModel = ctx.cleanNamespace() + ":block/" + ctx.cleanBasePath();
+        String brokenSinglePrefix = ctx.namespace() + ":block/" + ctx.brokenBasePath();
+
+        String baseDoubleModel = ctx.fullBlockNamespace() + ":block/" + ctx.fullBlockPath();
+        String brokenDoublePrefix = ctx.namespace() + ":block/" + getBrokenFullBlockPath(ctx.brokenBasePath());
+
+        futures.add(writeBlockstate(
+                writer,
+                ctx.blockId(),
+                createVerticalSlabWeightedBlockStateJson(
+                        baseSingleModel, brokenSinglePrefix,
+                        baseDoubleModel, brokenDoublePrefix,
+                        ctx.weights()
+                )
+        ));
+
+        // model single bez indeksu
+        futures.add(writeModel(
+                writer,
+                Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath()),
+                createVerticalSlabSingleModelJson(ctx.texturePoolPrefix())
+        ));
+
+        // modele single 0..6
+        futures.addAll(writeRepeatedModels(
+                writer,
+                i -> Identifier.of(ctx.namespace(), "block/" + ctx.brokenBasePath() + i),
+                i -> createVerticalSlabSingleModelJson(ctx.texturePoolPrefix() + i)
+        ));
+
+        futures.add(writeItem(
+                writer,
+                ctx.blockId(),
+                createItemModelJson(brokenSinglePrefix + "0")
+        ));
+
+        return futures;
+    }
+
+    private static String getVerticalSlabDoubleModelPath(String verticalSlabPath) {
+        return verticalSlabPath.replace("_slab", "");
+    }
+
+    private JsonObject createVerticalSlabSingleModelJson(String textureId) {
+        JsonObject root = new JsonObject();
+        root.addProperty("parent", "block/block");
+
+        JsonObject textures = new JsonObject();
+        textures.addProperty("bottom", textureId);
+        textures.addProperty("top", textureId);
+        textures.addProperty("side", textureId);
+        textures.addProperty("particle", textureId);
+        root.add("textures", textures);
+
+        JsonArray elements = new JsonArray();
+        JsonObject element = new JsonObject();
+
+        JsonArray from = new JsonArray();
+        from.add(0);
+        from.add(0);
+        from.add(0);
+
+        JsonArray to = new JsonArray();
+        to.add(16);
+        to.add(16);
+        to.add(8);
+
+        element.add("from", from);
+        element.add("to", to);
+
+        JsonObject faces = new JsonObject();
+        faces.add("down", createFace("#bottom"));
+        faces.add("up", createFace("#top"));
+        faces.add("north", createFace("#side"));
+        faces.add("south", createFace("#side"));
+        faces.add("west", createFace("#side"));
+        faces.add("east", createFace("#side"));
+
+        element.add("faces", faces);
+        elements.add(element);
+        root.add("elements", elements);
+
+        return root;
+    }
+
+    private JsonObject createFace(String texture) {
+        JsonObject face = new JsonObject();
+        face.addProperty("texture", texture);
+        return face;
+    }
+
+    private JsonObject createVerticalSlabWeightedBlockStateJson(
+            String baseSingleModel, String brokenSinglePrefix,
+            String baseDoubleModel, String brokenDoublePrefix,
+            int[] weights
+    ) {
+        JsonObject root = new JsonObject();
+        JsonObject variants = new JsonObject();
+
+        // SINGLE
+        addVerticalSlabVariant(variants, "facing=north,type=single,waterlogged=false", baseSingleModel, brokenSinglePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=east,type=single,waterlogged=false",  baseSingleModel, brokenSinglePrefix, weights, 90);
+        addVerticalSlabVariant(variants, "facing=south,type=single,waterlogged=false", baseSingleModel, brokenSinglePrefix, weights, 180);
+        addVerticalSlabVariant(variants, "facing=west,type=single,waterlogged=false",  baseSingleModel, brokenSinglePrefix, weights, 270);
+
+        addVerticalSlabVariant(variants, "facing=north,type=single,waterlogged=true", baseSingleModel, brokenSinglePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=east,type=single,waterlogged=true",  baseSingleModel, brokenSinglePrefix, weights, 90);
+        addVerticalSlabVariant(variants, "facing=south,type=single,waterlogged=true", baseSingleModel, brokenSinglePrefix, weights, 180);
+        addVerticalSlabVariant(variants, "facing=west,type=single,waterlogged=true",  baseSingleModel, brokenSinglePrefix, weights, 270);
+
+        // DOUBLE — zawsze pełny blok, bez rotacji
+        addVerticalSlabVariant(variants, "facing=north,type=double,waterlogged=false", baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=east,type=double,waterlogged=false",  baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=south,type=double,waterlogged=false", baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=west,type=double,waterlogged=false",  baseDoubleModel, brokenDoublePrefix, weights, null);
+
+        addVerticalSlabVariant(variants, "facing=north,type=double,waterlogged=true", baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=east,type=double,waterlogged=true",  baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=south,type=double,waterlogged=true", baseDoubleModel, brokenDoublePrefix, weights, null);
+        addVerticalSlabVariant(variants, "facing=west,type=double,waterlogged=true",  baseDoubleModel, brokenDoublePrefix, weights, null);
+
+        root.add("variants", variants);
+        return root;
+    }
+
+    private void addVerticalSlabVariant(
+            JsonObject variants,
+            String key,
+            String baseModelId,
+            String brokenModelPrefix,
+            int[] weights,
+            Integer y
+    ) {
+        boolean uvlock = y != null;
+        variants.add(key, createBrokenVariantArray(baseModelId, brokenModelPrefix, weights, null, y, uvlock));
     }
 
     private List<CompletableFuture<?>> generateStairs(DataWriter writer, BrokenContext ctx) {
@@ -346,6 +507,19 @@ public class ModBrokenModelProvider implements DataProvider {
         if (weights.length != EXPECTED_WEIGHT_COUNT) {
             throw new IllegalArgumentException(
                     "weights must contain exactly " + EXPECTED_WEIGHT_COUNT + " values: base + broken0..broken" + (BROKEN_VARIANT_COUNT - 1)
+            );
+        }
+    }
+
+    private void validateFamilyStructure(IBlockFamily family) {
+        Block[] normal = family.normal();
+        Block[] broken = family.broken();
+
+        if (normal.length != broken.length && !(normal.length == 0 || broken.length == 0)) {
+            throw new IllegalStateException(
+                    "Tablica normal() oraz broken() dla rodziny bloku " + family.getBaseBlock().getName() +
+                            " nie zawiera tej samej ilości bloków. " +
+                            "normal() = " + normal.length + ", broken() = " + broken.length
             );
         }
     }
@@ -625,8 +799,8 @@ public class ModBrokenModelProvider implements DataProvider {
 
         if (family == BRICK_BROKEN_FAMILY) {
             return switch (DatagenBlockKind.resolve(brokenBlock)) {
-                case CUBE -> Blocks.BRICKS;
                 case SLAB -> Blocks.BRICK_SLAB;
+                case VERTICAL_SLAB -> CustomBlocks.Brick_Slab_Vertical;
                 case STAIRS -> Blocks.BRICK_STAIRS;
                 case WALL -> Blocks.BRICK_WALL;
                 default -> Blocks.BRICKS;
@@ -635,8 +809,8 @@ public class ModBrokenModelProvider implements DataProvider {
 
         if (family == RUSTED_METAL_SHEET_FAMILY) {
             return switch (DatagenBlockKind.resolve(brokenBlock)) {
-                case CUBE -> Rusted_Metal_Sheet;
                 case SLAB -> Rusted_Metal_Sheet_Slab;
+                case VERTICAL_SLAB -> Rusted_Metal_Sheet_Slab_Vertical;
                 case STAIRS -> Rusted_Metal_Sheet_Stairs;
                 case WALL -> Rusted_Metal_Sheet_Wall;
                 default -> Rusted_Metal_Sheet;
@@ -645,8 +819,8 @@ public class ModBrokenModelProvider implements DataProvider {
 
         if (family == SCRAP_METAL_SHEET_FAMILY) {
             return switch (DatagenBlockKind.resolve(brokenBlock)) {
-                case CUBE -> Scrap_Metal_Sheet;
                 case SLAB -> Scrap_Metal_Sheet_Slab;
+                case VERTICAL_SLAB -> Scrap_Metal_Sheet_Slab_Vertical;
                 case STAIRS -> Scrap_Metal_Sheet_Stairs;
                 case WALL -> Scrap_Metal_Sheet_Wall;
                 default -> Scrap_Metal_Sheet;
