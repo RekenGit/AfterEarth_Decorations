@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "facing=east": [
+      {"model": "afterearth_decorations:block/iron_ladder", "y": 90},
+      {"model": "afterearth_decorations:block/iron_ladder0", "y": 90},
+      {"model": "afterearth_decorations:block/iron_ladder1", "y": 90}
+    ],
+    "facing=north": [
+      {"model": "afterearth_decorations:block/iron_ladder"},
+      {"model": "afterearth_decorations:block/iron_ladder0"},
+      {"model": "afterearth_decorations:block/iron_ladder1"}
+    ],
+    "facing=south": [
+      {"model": "afterearth_decorations:block/iron_ladder", "y": 180},
+      {"model": "afterearth_decorations:block/iron_ladder0", "y": 180},
+      {"model": "afterearth_decorations:block/iron_ladder1", "y": 180}
+    ],
+    "facing=west":  [
+      {"model": "afterearth_decorations:block/iron_ladder", "y": 270},
+      {"model": "afterearth_decorations:block/iron_ladder0", "y": 270},
+      {"model": "afterearth_decorations:block/iron_ladder1", "y": 270}
+    ]
+  }
+}

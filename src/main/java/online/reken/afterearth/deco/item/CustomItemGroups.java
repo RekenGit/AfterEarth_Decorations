@@ -52,6 +52,8 @@ public class CustomItemGroups {
                         for (Block block : SCRAP_METAL_SHEET_FAMILY.all()) entries.add(block);
                         for (Block block : CONTAINER_FAMILY.all()) entries.add(block);
                         entries.add(Razor_Wire);
+                        for (Block block : SIDE_BARRIER) entries.add(block);
+                        entries.add(Iron_Ladder);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,

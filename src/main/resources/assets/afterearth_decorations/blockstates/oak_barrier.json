@@ -1,0 +1,302 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2"
+        }
+      ],
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1"
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2"
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 90
+        }
+      ],
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 180
+        }
+      ],
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 180
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 180
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 270
+        }
+      ],
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "y": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "y": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "x": 270
+        }
+      ],
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "x": 270
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "x": 270
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "x": 90
+        }
+      ],
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "afterearth_decorations:block/oak_barrier",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier0",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier1",
+          "x": 90
+        },
+        {
+          "model": "afterearth_decorations:block/oak_barrier2",
+          "x": 90
+        }
+      ],
+      "when": {
+        "down": "false",
+        "east": "false",
+        "north": "false",
+        "south": "false",
+        "up": "false",
+        "west": "false"
+      }
+    }
+  ]
+}

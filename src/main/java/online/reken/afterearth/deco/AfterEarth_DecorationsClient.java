@@ -20,6 +20,7 @@ public class AfterEarth_DecorationsClient implements ClientModInitializer {
 
         BlockRenderLayerMap.putBlock(CustomBlocks.Mold_Carpet, BlockRenderLayer.TRANSLUCENT);
         BlockRenderLayerMap.putBlock(CustomBlocks.Razor_Wire, BlockRenderLayer.TRANSLUCENT);
+        BlockRenderLayerMap.putBlock(CustomBlocks.Iron_Ladder, BlockRenderLayer.TRANSLUCENT);
 
         BlockRenderLayerMap.putBlock(CustomBlocks.Bush_Carpet, BlockRenderLayer.TRANSLUCENT);
         ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> {

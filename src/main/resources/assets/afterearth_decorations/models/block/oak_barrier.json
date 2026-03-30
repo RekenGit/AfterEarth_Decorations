@@ -1,0 +1,7 @@
+{
+  "parent": "afterearth_decorations:block/barrier_template",
+  "textures": {
+    "0": "afterearth_decorations:block/oak_barrier",
+    "particle": "afterearth_decorations:block/oak_barrier"
+  }
+}

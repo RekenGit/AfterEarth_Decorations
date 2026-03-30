@@ -19,6 +19,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import online.reken.afterearth.deco.AfterEarth_Decorations;
 import online.reken.afterearth.deco.block.custom.RazorWireBlock;
+import online.reken.afterearth.deco.block.custom.SideBarrierBlock;
 import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
 
 import java.util.ArrayList;
@@ -294,6 +295,23 @@ public class CustomBlocks {
             .sounds(BlockSoundGroup.GRASS)
             .burnable()
             .pistonBehavior(PistonBehavior.DESTROY));
+
+    /// Barriers
+    public static final Block Acacia_Barrier = registerCustomBlock("acacia_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.ACACIA_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Bamboo_Barrier = registerCustomBlock("bamboo_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.BAMBOO_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Birch_Barrier = registerCustomBlock("birch_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.BIRCH_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Cherry_Barrier = registerCustomBlock("cherry_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.CHERRY_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Crimson_Barrier = registerCustomBlock("crimson_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.CRIMSON_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Dark_Oak_Barrier = registerCustomBlock("dark_oak_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.DARK_OAK_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Jungle_Barrier = registerCustomBlock("jungle_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.JUNGLE_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Mangrove_Barrier = registerCustomBlock("mangrove_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.MANGROVE_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Oak_Barrier = registerCustomBlock("oak_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.OAK_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Pale_Oak_Barrier = registerCustomBlock("pale_oak_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.PALE_OAK_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Spruce_Barrier = registerCustomBlock("spruce_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.SPRUCE_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+    public static final Block Warped_Barrier = registerCustomBlock("warped_barrier", SideBarrierBlock::new, AbstractBlock.Settings.copy(Blocks.WARPED_PLANKS).pistonBehavior(PistonBehavior.DESTROY).nonOpaque());
+
+    /// Ladder
+    public static final Block Iron_Ladder = registerCustomBlock("iron_ladder", LadderBlock::new, AbstractBlock.Settings.copy(Blocks.LADDER).strength(1.2F).sounds(BlockSoundGroup.IRON));
 
     ///Street
     public static final Block Street_Black_Gravel = registerBlock("street_black_gravel", AbstractBlock.Settings.copy(Blocks.BLACK_CONCRETE));
@@ -759,6 +777,22 @@ public class CustomBlocks {
             CustomBlocks.Test_Block
     );
 
+    /// BARRIER SIDE
+    public static final Block[] SIDE_BARRIER = {
+        Acacia_Barrier,
+        Bamboo_Barrier,
+        Birch_Barrier,
+        Cherry_Barrier,
+        Crimson_Barrier,
+        Dark_Oak_Barrier,
+        Jungle_Barrier,
+        Mangrove_Barrier,
+        Oak_Barrier,
+        Pale_Oak_Barrier,
+        Spruce_Barrier,
+        Warped_Barrier
+    };
+
     ///  ALL BLOCKS
     public static final ArrayList<Block> ALL_MOD_BLOCKS = new ArrayList<Block>();
 
@@ -778,9 +812,7 @@ public class CustomBlocks {
             }
 
             @Override
-            protected void spawnLeafParticle(World world, BlockPos pos, Random random) {
-
-            }
+            protected void spawnLeafParticle(World world, BlockPos pos, Random random) { }
         };
         registerBlockItem(name, block);
         return Registry.register(Registries.BLOCK, key, block);
@@ -858,6 +890,8 @@ public class CustomBlocks {
         ALL_MOD_BLOCKS.add(Bush_Carpet);
         ALL_MOD_BLOCKS.add(Mold_Carpet);
         ALL_MOD_BLOCKS.add(Razor_Wire);
+        ALL_MOD_BLOCKS.addAll(List.of(SIDE_BARRIER));
+        ALL_MOD_BLOCKS.add(Iron_Ladder);
 
         //Adding new blocks to the game
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {

@@ -3,6 +3,7 @@ package online.reken.afterearth.deco.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Block;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.WallBlock;
 import online.reken.afterearth.deco.block.CustomBlocks;
@@ -42,9 +43,13 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 //                .add(Granite_Brick_Wall_Broken)
 //                .add(Test_Wall);
 
-        for (Block block : ALL_MOD_BLOCKS)
+        for (Block block : ALL_MOD_BLOCKS){
             if (block instanceof PaneBlock)
                 valueLookupBuilder(BlockTags.BARS).add(block);
+            else if (block instanceof LadderBlock)
+                valueLookupBuilder(BlockTags.CLIMBABLE).add(block);
+        }
+
 
 //        valueLookupBuilder(BlockTags.BARS)
 //                .add(Test_Pane);

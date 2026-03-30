@@ -1,0 +1,6 @@
+{
+	"parent": "afterearth_decorations:block/iron_ladder",
+	"textures": {
+		"2": "afterearth_decorations:block/iron_ladder_rust0"
+	}
+}

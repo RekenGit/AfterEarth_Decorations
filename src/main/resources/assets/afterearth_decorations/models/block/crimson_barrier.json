@@ -1,0 +1,7 @@
+{
+  "parent": "afterearth_decorations:block/barrier_template",
+  "textures": {
+    "0": "afterearth_decorations:block/crimson_barrier",
+    "particle": "afterearth_decorations:block/crimson_barrier"
+  }
+}
