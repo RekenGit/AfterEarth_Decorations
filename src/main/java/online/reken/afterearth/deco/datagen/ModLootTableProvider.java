@@ -6,10 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.BlockTags;
-import online.reken.afterearth.deco.block.CustomBlocks;
 
 import java.util.concurrent.CompletableFuture;
 

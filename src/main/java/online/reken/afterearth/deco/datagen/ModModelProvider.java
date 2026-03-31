@@ -24,34 +24,12 @@ import online.reken.afterearth.deco.block.CustomBlocks.IBlockFamily;
 import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
 import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static online.reken.afterearth.deco.block.CustomBlocks.*;
 
 public class ModModelProvider extends FabricModelProvider {
-    private static final List<IBlockFamily> TEXTURE_POOL_FAMILIES = List.of(
-            TEST_FAMILY,
-            ANDESITE_BRICK_FAMILY,
-            GRANITE_BRICK_FAMILY,
-            DIORITE_BRICK_FAMILY,
-            METAL_SHEET_FAMILY,
-            EXPOSED_METAL_SHEET_FAMILY,
-            WEATHERED_METAL_FAMILY
-    );
-
-    private static final List<IBlockFamily> STANDALONE_BLOCK_FAMILIES = List.of(
-            ALL_VANILLA_SLAB_VERTICAL_VARIANTS,
-            ALL_TERRACOTTA_VARIANTS,
-            STREET_LINE_BLACK_GRAVEL_FAMILY,
-            STREET_LINE_GRAY_GRAVEL_FAMILY,
-            CONTAINER_FAMILY
-    );
-
-    private static final List<IBlockFamily> STANDALONE_CUBE_FAMILIES = List.of(
-            QUARTZ_CHECKER_FAMILY,
-            QUARTZ_TILE_FAMILY
-    );
+    private static final List<String> BLOCK_SUFFIX_EXCEPTIONS = List.of("block/test", "block/purpur");
 
     private Block pendingGlassBlock;
 
@@ -61,16 +39,12 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
-        for (IBlockFamily family : TEXTURE_POOL_FAMILIES) {
-            registerBlockFamily(generator, family);
+        for (IBlockFamily family : MODEL_TEXTURE_POOL_FAMILIES) {
+            registerFamily(generator, family, true);
         }
 
-        for (IBlockFamily family : STANDALONE_CUBE_FAMILIES) {
-            registerStandaloneCubeFamily(generator, family);
-        }
-
-        for (IBlockFamily family : STANDALONE_BLOCK_FAMILIES) {
-            registerStandaloneFamily(generator, family);
+        for (IBlockFamily family : MODEL_STANDALONE_BLOCK_FAMILIES) {
+            registerFamily(generator, family, false);
         }
 
         generator.registerNorthDefaultHorizontalRotatable(Razor_Wire);
@@ -80,70 +54,25 @@ public class ModModelProvider extends FabricModelProvider {
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
     }
 
-    private void registerStandaloneCubeFamily(BlockStateModelGenerator generator, IBlockFamily family) {
-        for (Block block : family.normal()) {
-            generator.registerSimpleCubeAll(block);
-        }
-    }
-
-    private void registerStandaloneFamily(BlockStateModelGenerator generator, IBlockFamily family) {
-        pendingGlassBlock = null;
-
-        for (Block block : family.normal()) {
-            registerStandaloneBlock(generator, family, block);
-        }
-    }
-
-    private void registerStandaloneBlock(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
-        switch (DatagenBlockKind.resolve(block)) {
-            case CUBE -> generator.registerSimpleCubeAll(block);
-//            case SLAB, STAIRS, WALL -> throw new IllegalStateException(
-//                    "Standalone family contains unsupported block type: "
-//                            + DatagenBlockKind.resolve(block)
-//                            + " for block " + ModelIds.getBlockModelId(block)
-//                            + ". Move it to a texture-pool family or add custom standalone handling."
-//            );
-            case SLAB -> registerSlab(generator, family, block);
-            case STAIRS -> registerStairs(generator, family, block);
-            case WALL -> registerWall(generator, family, block);
-            case VERTICAL_SLAB -> registerVerticalSlab(generator, family, block);
-            case PILLAR -> registerPillar(generator, family, block);
-            case GLAZED_TERRACOTTA -> registerGlazedTerracotta(generator, block);
-            case TRANSPARENT -> pendingGlassBlock = block;
-            case PANE -> registerPane(generator, block);
-            case DOOR -> generator.registerDoor(block);
-            case TRAPDOOR -> generator.registerTrapdoor(block);
-            case CARPET -> registerCarpet(generator, block);
-            case LEAVES -> generator.registerTintedBlockAndItem(block, TexturedModel.LEAVES, 16777215);
-        }
-    }
-
-    private void registerBlockFamily(BlockStateModelGenerator generator, IBlockFamily family) {
+    private void registerFamily(BlockStateModelGenerator generator, IBlockFamily family, boolean useTexturePool) {
         pendingGlassBlock = null;
 
         Block baseBlock = family.getBaseBlock();
-        BlockStateModelGenerator.BlockTexturePool pool = generator.registerCubeAllModelTexturePool(baseBlock);
+        if (useTexturePool)
+            generator.registerCubeAllModelTexturePool(baseBlock);
 
-        for (Block block : family.normal()) {
-            if (block == baseBlock) {
-                continue;
-            }
-            registerFamilyMember(generator, family, pool, block);
-        }
+        for (Block block : family.normal())
+            if (!useTexturePool || block != baseBlock)
+                registerBlock(generator, family, block);
     }
 
-    private void registerFamilyMember(
-            BlockStateModelGenerator generator,
-            IBlockFamily family,
-            BlockStateModelGenerator.BlockTexturePool pool,
-            Block block
-    ) {
+    private void registerBlock(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
         switch (DatagenBlockKind.resolve(block)) {
+            case CUBE -> generator.registerSimpleCubeAll(block);
             case SLAB -> registerSlab(generator, family, block);
             case VERTICAL_SLAB -> registerVerticalSlab(generator, family, block);
             case STAIRS -> registerStairs(generator, family, block);
             case WALL -> registerWall(generator, family, block);
-            case CUBE -> generator.registerSimpleCubeAll(block);
             case PILLAR -> registerPillar(generator, family, block);
             case GLAZED_TERRACOTTA -> registerGlazedTerracotta(generator, block);
             case TRANSPARENT -> pendingGlassBlock = block;
@@ -153,13 +82,6 @@ public class ModModelProvider extends FabricModelProvider {
             case CARPET -> registerCarpet(generator, block);
             case LEAVES -> generator.registerTintedBlockAndItem(block, TexturedModel.LEAVES, 16777215);
         }
-    }
-
-    private static Identifier getTextureId(IBlockFamily family, Block block) {
-        Identifier blockId = ModelIds.getBlockModelId(block);
-        String basePath = getBasePathFromVariantPath(blockId.getPath());
-        String textureNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
-        return Identifier.of(textureNamespace, basePath);
     }
 
     private void registerPane(BlockStateModelGenerator generator, Block pane) {
@@ -183,7 +105,7 @@ public class ModModelProvider extends FabricModelProvider {
         String pilarTextureTop = baseBlockId.getPath();
         String pilarTextureSide = blockId.getPath();
         String pilarNamespaceTop = baseBlockId.getNamespace();
-        if (String.valueOf(block.getName()).contains("_pillar")){
+        if (blockId.getPath().contains("_pillar")) {
             pilarNamespaceTop = blockId.getNamespace();
             pilarTextureTop = blockId.getPath().replace("_pillar", "_pillar_top");
         }
@@ -227,12 +149,9 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     public static void registerCustomLog(
-            BlockStateModelGenerator generator,
-            Block block,
-            String sideNamespace,
-            String sideTexture,
-            String endNamespace,
-            String endTexture
+            BlockStateModelGenerator generator, Block block,
+            String sideNamespace, String sideTexture,
+            String endNamespace, String endTexture
     ) {
         TextureMap textures = new TextureMap()
                 .put(TextureKey.SIDE, Identifier.of(sideNamespace, sideTexture))
@@ -274,48 +193,6 @@ public class ModModelProvider extends FabricModelProvider {
         generator.registerParentedItemModel(carpet, carpetModel);
     }
 
-    private static boolean useMinecraftNamespace(IBlockFamily family) {
-        return family == ALL_VANILLA_SLAB_VERTICAL_VARIANTS || family == ALL_TERRACOTTA_VARIANTS;
-    }
-
-    private static String getBasePathFromVariantModelPath(String path) {
-        return getBasePathFromVariantPath(path)
-                .replace("_top", "")
-                .replace("_bottom", "")
-                .replace("_side", "");
-    }
-
-    private static String getBasePathFromVariantPath(String path) {
-        String result = path;
-
-        AfterEarth_Decorations.LOGGER.info("Generating..." + path);
-
-        result = result.replace("_slab_vertical", "");
-        result = result.replace("_slab", "");
-        result = result.replace("_stairs", "");
-        result = result.replace("_wall", "");
-        result = result.replace("brick", "bricks");
-        result = result.replace("tile", "tiles");
-        result = result.replace("waxed_", "");
-
-        List<String> _listOfBlock = new ArrayList<String>();
-        _listOfBlock.add("block/test");
-        _listOfBlock.add("block/purpur");
-
-        if (_listOfBlock.contains(result))
-            result += "_block";
-
-        switch (result){
-            case "block/quartz": return "block/quartz_block_side";
-            case "block/smooth_quartz": return "block/quartz_block_bottom";
-            case "block/smooth_sandstone": return "block/sandstone_top";
-            case "block/smooth_red_sandstone": return "block/red_sandstone_top";
-        }
-
-        AfterEarth_Decorations.LOGGER.info(result);
-        return result;
-    }
-
     public static void registerWall(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
         Identifier blockId = ModelIds.getBlockModelId(block);
         Identifier textureId = getTextureId(family, block);
@@ -353,12 +230,7 @@ public class ModModelProvider extends FabricModelProvider {
         Identifier innerModel = Identifier.of(blockId.getNamespace(), blockId.getPath() + "_inner");
         Identifier outerModel = Identifier.of(blockId.getNamespace(), blockId.getPath() + "_outer");
 
-        TextureMap textures = new TextureMap()
-                .put(TextureKey.BOTTOM, textureId)
-                .put(TextureKey.TOP, textureId)
-                .put(TextureKey.SIDE, textureId)
-                .put(TextureKey.PARTICLE, textureId)
-                .put(TextureKey.ALL, textureId);
+        TextureMap textures = createBlockTextureMap(textureId);
 
         Models.STAIRS.upload(straightModel, textures, generator.modelCollector);
         Models.INNER_STAIRS.upload(innerModel, textures, generator.modelCollector);
@@ -378,23 +250,11 @@ public class ModModelProvider extends FabricModelProvider {
     public static void registerSlab(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
         Identifier blockId = ModelIds.getBlockModelId(block);
         Identifier textureId = getTextureId(family, block);
-
         Identifier bottomModel = Identifier.of(blockId.getNamespace(), blockId.getPath());
         Identifier topModel = Identifier.of(blockId.getNamespace(), blockId.getPath() + "_top");
+        Identifier fullBlockModel = getFullBlockModelId(family, block);
 
-        String basePath = getBasePathFromVariantModelPath(blockId.getPath());
-        String baseModelNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
-        Identifier fullBlockModel = Identifier.of(
-                baseModelNamespace,
-                basePath
-        );
-
-        TextureMap textures = new TextureMap()
-                .put(TextureKey.BOTTOM, textureId)
-                .put(TextureKey.TOP, textureId)
-                .put(TextureKey.SIDE, textureId)
-                .put(TextureKey.PARTICLE, textureId)
-                .put(TextureKey.ALL, textureId);
+        TextureMap textures = createBlockTextureMap(textureId);
 
         Models.SLAB.upload(bottomModel, textures, generator.modelCollector);
         Models.SLAB_TOP.upload(topModel, textures, generator.modelCollector);
@@ -418,59 +278,18 @@ public class ModModelProvider extends FabricModelProvider {
 
     public static void registerVerticalSlab(BlockStateModelGenerator generator, IBlockFamily family, Block block) {
         Identifier blockId = ModelIds.getBlockModelId(block);
-
-        String basePath = getBasePathFromVariantPath(blockId.getPath());
-        String textureNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
-        Identifier textureId = Identifier.of(textureNamespace, basePath);
-
+        Identifier textureId = getTextureId(family, block);
         Identifier singleModel = Identifier.of(blockId.getNamespace(), blockId.getPath());
+        Identifier fullBlockModel = getFullBlockModelId(family, block);
 
-        String baseModelPath = getBasePathFromVariantModelPath(blockId.getPath());
-        String baseModelNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
-        Identifier fullBlockModel = Identifier.of(
-                baseModelNamespace,
-                baseModelPath
-        );
+        TextureMap textures = createBlockTextureMap(textureId);
 
-        generator.modelCollector.accept(singleModel, () -> com.google.gson.JsonParser.parseString("""
-        {
-          "parent": "block/block",
-          "textures": {
-            "bottom": "%s:%s",
-            "top": "%s:%s",
-            "side": "%s:%s",
-            "particle": "%s:%s"
-          },
-          "elements": [
-            {
-              "from": [0, 0, 0],
-              "to": [16, 16, 8],
-              "faces": {
-                "down":  { "texture": "#bottom" },
-                "up":    { "texture": "#top" },
-                "north": { "texture": "#side" },
-                "south": { "texture": "#side" },
-                "west":  { "texture": "#side" },
-                "east":  { "texture": "#side" }
-              }
-            }
-          ]
-        }
-        """.formatted(
-                textureId.getNamespace(), textureId.getPath(),
-                textureId.getNamespace(), textureId.getPath(),
-                textureId.getNamespace(), textureId.getPath(),
-                textureId.getNamespace(), textureId.getPath()
-        )).getAsJsonObject());
+        generator.modelCollector.accept(singleModel, () -> createVerticalSlabModelJson(textures));
 
         WeightedVariant northSingle = BlockStateModelGenerator.createWeightedVariant(singleModel);
-        WeightedVariant eastSingle  = BlockStateModelGenerator.createWeightedVariant(singleModel)
-                .apply(v -> v.withRotationY(AxisRotation.R90));
-        WeightedVariant southSingle = BlockStateModelGenerator.createWeightedVariant(singleModel)
-                .apply(v -> v.withRotationY(AxisRotation.R180));
-        WeightedVariant westSingle  = BlockStateModelGenerator.createWeightedVariant(singleModel)
-                .apply(v -> v.withRotationY(AxisRotation.R270));
-
+        WeightedVariant eastSingle = northSingle.apply(v -> v.withRotationY(AxisRotation.R90));
+        WeightedVariant southSingle = northSingle.apply(v -> v.withRotationY(AxisRotation.R180));
+        WeightedVariant westSingle = northSingle.apply(v -> v.withRotationY(AxisRotation.R270));
         WeightedVariant doubleVariant = BlockStateModelGenerator.createWeightedVariant(fullBlockModel);
 
         generator.blockStateCollector.accept(
@@ -482,27 +301,122 @@ public class ModModelProvider extends FabricModelProvider {
                                                 Properties.WATERLOGGED
                                         )
                                         .register(Direction.NORTH, VerticalSlabType.SINGLE, false, northSingle)
-                                        .register(Direction.EAST,  VerticalSlabType.SINGLE, false, eastSingle)
+                                        .register(Direction.EAST, VerticalSlabType.SINGLE, false, eastSingle)
                                         .register(Direction.SOUTH, VerticalSlabType.SINGLE, false, southSingle)
-                                        .register(Direction.WEST,  VerticalSlabType.SINGLE, false, westSingle)
+                                        .register(Direction.WEST, VerticalSlabType.SINGLE, false, westSingle)
 
                                         .register(Direction.NORTH, VerticalSlabType.SINGLE, true, northSingle)
-                                        .register(Direction.EAST,  VerticalSlabType.SINGLE, true, eastSingle)
+                                        .register(Direction.EAST, VerticalSlabType.SINGLE, true, eastSingle)
                                         .register(Direction.SOUTH, VerticalSlabType.SINGLE, true, southSingle)
-                                        .register(Direction.WEST,  VerticalSlabType.SINGLE, true, westSingle)
+                                        .register(Direction.WEST, VerticalSlabType.SINGLE, true, westSingle)
 
                                         .register(Direction.NORTH, VerticalSlabType.DOUBLE, false, doubleVariant)
-                                        .register(Direction.EAST,  VerticalSlabType.DOUBLE, false, doubleVariant)
+                                        .register(Direction.EAST, VerticalSlabType.DOUBLE, false, doubleVariant)
                                         .register(Direction.SOUTH, VerticalSlabType.DOUBLE, false, doubleVariant)
-                                        .register(Direction.WEST,  VerticalSlabType.DOUBLE, false, doubleVariant)
+                                        .register(Direction.WEST, VerticalSlabType.DOUBLE, false, doubleVariant)
 
                                         .register(Direction.NORTH, VerticalSlabType.DOUBLE, true, doubleVariant)
-                                        .register(Direction.EAST,  VerticalSlabType.DOUBLE, true, doubleVariant)
+                                        .register(Direction.EAST, VerticalSlabType.DOUBLE, true, doubleVariant)
                                         .register(Direction.SOUTH, VerticalSlabType.DOUBLE, true, doubleVariant)
-                                        .register(Direction.WEST,  VerticalSlabType.DOUBLE, true, doubleVariant)
+                                        .register(Direction.WEST, VerticalSlabType.DOUBLE, true, doubleVariant)
                         )
         );
 
         generator.registerParentedItemModel(block, singleModel);
+    }
+
+    private static com.google.gson.JsonObject createVerticalSlabModelJson(TextureMap textures) {
+        Identifier bottom = textures.getTexture(TextureKey.BOTTOM);
+        Identifier top = textures.getTexture(TextureKey.TOP);
+        Identifier side = textures.getTexture(TextureKey.SIDE);
+        Identifier particle = textures.getTexture(TextureKey.PARTICLE);
+
+        return com.google.gson.JsonParser.parseString("""
+    {
+      "parent": "block/block",
+      "textures": {
+        "bottom": "%s:%s",
+        "top": "%s:%s",
+        "side": "%s:%s",
+        "particle": "%s:%s"
+      },
+      "elements": [
+        {
+          "from": [0, 0, 0],
+          "to": [16, 16, 8],
+          "faces": {
+            "down":  { "texture": "#bottom" },
+            "up":    { "texture": "#top" },
+            "north": { "texture": "#side" },
+            "south": { "texture": "#side" },
+            "west":  { "texture": "#side" },
+            "east":  { "texture": "#side" }
+          }
+        }
+      ]
+    }
+    """.formatted(
+                bottom.getNamespace(), bottom.getPath(),
+                top.getNamespace(), top.getPath(),
+                side.getNamespace(), side.getPath(),
+                particle.getNamespace(), particle.getPath()
+        )).getAsJsonObject();
+    }
+
+    private static TextureMap createBlockTextureMap(Identifier textureId) {
+        return new TextureMap()
+                .put(TextureKey.BOTTOM, textureId)
+                .put(TextureKey.TOP, textureId)
+                .put(TextureKey.SIDE, textureId)
+                .put(TextureKey.PARTICLE, textureId)
+                .put(TextureKey.ALL, textureId);
+    }
+
+    private static boolean useMinecraftNamespace(IBlockFamily family) {
+        return family == ALL_VANILLA_SLAB_VERTICAL_VARIANTS || family == ALL_TERRACOTTA_VARIANTS;
+    }
+
+    private static Identifier getFullBlockModelId(IBlockFamily family, Block block) {
+        Identifier blockId = ModelIds.getBlockModelId(block);
+        String baseModelPath = getBasePathFromVariantModelPath(blockId.getPath());
+        String baseModelNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
+        return Identifier.of(baseModelNamespace, baseModelPath);
+    }
+
+    private static Identifier getTextureId(IBlockFamily family, Block block) {
+        Identifier blockId = ModelIds.getBlockModelId(block);
+        String basePath = getBasePathFromVariantPath(blockId.getPath());
+        String textureNamespace = useMinecraftNamespace(family) ? "minecraft" : blockId.getNamespace();
+        return Identifier.of(textureNamespace, basePath);
+    }
+
+    private static String getBasePathFromVariantModelPath(String path) {
+        return getBasePathFromVariantPath(path)
+                .replace("_top", "")
+                .replace("_bottom", "")
+                .replace("_side", "");
+    }
+
+    private static String getBasePathFromVariantPath(String path) {
+        String result = path
+                .replace("_slab_vertical", "")
+                .replace("_slab", "")
+                .replace("_stairs", "")
+                .replace("_wall", "")
+                .replace("brick", "bricks")
+                .replace("tile", "tiles")
+                .replace("waxed_", "");
+
+        if (BLOCK_SUFFIX_EXCEPTIONS.contains(result)) {
+            result += "_block";
+        }
+
+        return switch (result) {
+            case "block/quartz" -> "block/quartz_block_side";
+            case "block/smooth_quartz" -> "block/quartz_block_bottom";
+            case "block/smooth_sandstone" -> "block/sandstone_top";
+            case "block/smooth_red_sandstone" -> "block/red_sandstone_top";
+            default -> result;
+        };
     }
 }

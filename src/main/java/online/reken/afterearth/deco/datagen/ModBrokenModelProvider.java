@@ -10,13 +10,9 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.Direction;
 import online.reken.afterearth.deco.block.CustomBlocks;
 import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeighted;
 import online.reken.afterearth.deco.block.CustomBlocks.BlockFamilyWeightedWithBase;
-import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
-import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,16 +26,6 @@ public class ModBrokenModelProvider implements DataProvider {
     private static final int BROKEN_VARIANT_COUNT = 7;
     private static final int EXPECTED_WEIGHT_COUNT = BROKEN_VARIANT_COUNT + 1;
 
-    private static final List<IBlockFamily> BROKEN_FAMILIES = List.of(
-            BRICK_BROKEN_FAMILY,
-            ANDESITE_BRICK_FAMILY,
-            GRANITE_BRICK_FAMILY,
-            DIORITE_BRICK_FAMILY,
-            QUARTZ_CHECKER_FAMILY,
-            QUARTZ_TILE_FAMILY,
-            RUSTED_METAL_SHEET_FAMILY,
-            SCRAP_METAL_SHEET_FAMILY
-    );
 
     private final DataOutput.PathResolver blockstatesPathResolver;
     private final DataOutput.PathResolver modelsPathResolver;
@@ -55,7 +41,7 @@ public class ModBrokenModelProvider implements DataProvider {
     public CompletableFuture<?> run(DataWriter writer) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        for (IBlockFamily family : BROKEN_FAMILIES) {
+        for (IBlockFamily family : BROKEN_WEIGHTED_FAMILIES) {
             futures.addAll(generateBlocksFamily(writer, family));
         }
 
@@ -246,10 +232,6 @@ public class ModBrokenModelProvider implements DataProvider {
         ));
 
         return futures;
-    }
-
-    private static String getVerticalSlabDoubleModelPath(String verticalSlabPath) {
-        return verticalSlabPath.replace("_slab", "");
     }
 
     private JsonObject createVerticalSlabSingleModelJson(String textureId) {

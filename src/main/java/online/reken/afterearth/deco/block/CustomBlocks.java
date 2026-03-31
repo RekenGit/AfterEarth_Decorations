@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import online.reken.afterearth.deco.AfterEarth_Decorations;
 import online.reken.afterearth.deco.block.custom.RazorWireBlock;
 import online.reken.afterearth.deco.block.custom.SideBarrierBlock;
+import online.reken.afterearth.deco.block.custom.VaultDoorBlock;
 import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
 
 import java.util.ArrayList;
@@ -312,6 +313,9 @@ public class CustomBlocks {
 
     /// Ladder
     public static final Block Iron_Ladder = registerCustomBlock("iron_ladder", LadderBlock::new, AbstractBlock.Settings.copy(Blocks.LADDER).strength(1.2F).sounds(BlockSoundGroup.IRON));
+
+    public static final Block Vault_Doors = registerCustomBlock("vault_doors", VaultDoorBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_DOOR).strength(5.0F).nonOpaque().sounds(BlockSoundGroup.IRON));
+
 
     ///Street
     public static final Block Street_Black_Gravel = registerBlock("street_black_gravel", AbstractBlock.Settings.copy(Blocks.BLACK_CONCRETE));
@@ -777,20 +781,71 @@ public class CustomBlocks {
             CustomBlocks.Test_Block
     );
 
+    public static final List<IBlockFamily> MODEL_TEXTURE_POOL_FAMILIES = List.of(
+            TEST_FAMILY,
+            ANDESITE_BRICK_FAMILY,
+            GRANITE_BRICK_FAMILY,
+            DIORITE_BRICK_FAMILY,
+            METAL_SHEET_FAMILY,
+            EXPOSED_METAL_SHEET_FAMILY,
+            WEATHERED_METAL_FAMILY
+    );
+
+    public static final List<IBlockFamily> MODEL_STANDALONE_BLOCK_FAMILIES = List.of(
+            ALL_VANILLA_SLAB_VERTICAL_VARIANTS,
+            ALL_TERRACOTTA_VARIANTS,
+            STREET_LINE_BLACK_GRAVEL_FAMILY,
+            STREET_LINE_GRAY_GRAVEL_FAMILY,
+            CONTAINER_FAMILY,
+            QUARTZ_CHECKER_FAMILY,
+            QUARTZ_TILE_FAMILY
+    );
+
+    public static final List<IBlockFamily> BROKEN_WEIGHTED_FAMILIES = List.of(
+            BRICK_BROKEN_FAMILY,
+            ANDESITE_BRICK_FAMILY,
+            GRANITE_BRICK_FAMILY,
+            DIORITE_BRICK_FAMILY,
+            QUARTZ_CHECKER_FAMILY,
+            QUARTZ_TILE_FAMILY,
+            RUSTED_METAL_SHEET_FAMILY,
+            SCRAP_METAL_SHEET_FAMILY
+    );
+
+    public static final List<IBlockFamily> ALL_REGISTERED_FAMILIES = List.of(
+            ALL_VANILLA_SLAB_VERTICAL_VARIANTS,
+            ALL_TERRACOTTA_VARIANTS,
+            BRICK_BROKEN_FAMILY,
+            ANDESITE_BRICK_FAMILY,
+            GRANITE_BRICK_FAMILY,
+            DIORITE_BRICK_FAMILY,
+            METAL_SHEET_FAMILY,
+            EXPOSED_METAL_SHEET_FAMILY,
+            WEATHERED_METAL_FAMILY,
+            RUSTED_METAL_SHEET_FAMILY,
+            SCRAP_METAL_SHEET_FAMILY,
+            CONTAINER_FAMILY,
+            QUARTZ_CHECKER_FAMILY,
+            QUARTZ_TILE_FAMILY,
+            STREET_LINE_BLACK_GRAVEL_FAMILY,
+            STREET_LINE_GRAY_GRAVEL_FAMILY,
+            TEST_FAMILY
+    );
+
     /// BARRIER SIDE
     public static final Block[] SIDE_BARRIER = {
-        Acacia_Barrier,
-        Bamboo_Barrier,
-        Birch_Barrier,
-        Cherry_Barrier,
-        Crimson_Barrier,
-        Dark_Oak_Barrier,
-        Jungle_Barrier,
-        Mangrove_Barrier,
-        Oak_Barrier,
-        Pale_Oak_Barrier,
-        Spruce_Barrier,
-        Warped_Barrier
+            Acacia_Barrier,
+            Bamboo_Barrier,
+            Birch_Barrier,
+            Cherry_Barrier,
+            Crimson_Barrier,
+            Dark_Oak_Barrier,
+            Jungle_Barrier,
+            Mangrove_Barrier,
+            Oak_Barrier,
+            Pale_Oak_Barrier,
+            Spruce_Barrier,
+            Warped_Barrier
     };
 
     ///  ALL BLOCKS
@@ -870,34 +925,26 @@ public class CustomBlocks {
     public static void registerModBlocks() {
         AfterEarth_Decorations.LOGGER.info("Registering Mod Blocks for" + AfterEarth_Decorations.MOD_ID);
 
-        ALL_MOD_BLOCKS.addAll(List.of(ALL_VANILLA_SLAB_VERTICAL_VARIANTS.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(ALL_TERRACOTTA_VARIANTS.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(BRICK_BROKEN_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(ANDESITE_BRICK_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(GRANITE_BRICK_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(DIORITE_BRICK_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(METAL_SHEET_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(EXPOSED_METAL_SHEET_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(WEATHERED_METAL_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(RUSTED_METAL_SHEET_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(SCRAP_METAL_SHEET_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(CONTAINER_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(QUARTZ_CHECKER_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(QUARTZ_TILE_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(STREET_LINE_BLACK_GRAVEL_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(STREET_LINE_GRAY_GRAVEL_FAMILY.all()));
-        ALL_MOD_BLOCKS.addAll(List.of(TEST_FAMILY.all()));
-        ALL_MOD_BLOCKS.add(Bush_Carpet);
-        ALL_MOD_BLOCKS.add(Mold_Carpet);
-        ALL_MOD_BLOCKS.add(Razor_Wire);
-        ALL_MOD_BLOCKS.addAll(List.of(SIDE_BARRIER));
-        ALL_MOD_BLOCKS.add(Iron_Ladder);
+        ALL_MOD_BLOCKS.clear();
+        addFamilyBlocks(ALL_MOD_BLOCKS, ALL_REGISTERED_FAMILIES);
+        addBlocks(ALL_MOD_BLOCKS, Bush_Carpet, Mold_Carpet, Razor_Wire, Iron_Ladder, Vault_Doors);
+        addBlocks(ALL_MOD_BLOCKS, SIDE_BARRIER);
 
         //Adding new blocks to the game
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register(entries -> {
             for (Block block : ALL_VANILLA_SLAB_VERTICAL_VARIANTS.all()) entries.add(block);
             for (Block block : ALL_TERRACOTTA_VARIANTS.all()) entries.add(block);
         });
+    }
+
+    private static void addFamilyBlocks(List<Block> target, List<IBlockFamily> families) {
+        for (IBlockFamily family : families) {
+            target.addAll(List.of(family.all()));
+        }
+    }
+
+    private static void addBlocks(List<Block> target, Block... blocks) {
+        target.addAll(List.of(blocks));
     }
 
     private static Block[] concat(Block[] first, Block[] second) {
@@ -931,42 +978,6 @@ public class CustomBlocks {
             }
             throw new IllegalStateException("Block family has no normal blocks.");
         }
-
-        default String getTexturePoolPath() {
-            Identifier id = Registries.BLOCK.getId(getBaseBlock());
-            return id.getPath();
-        }
-
-        default Block getBaseBlockFor(Block block) {
-            if (!isMapped()) return getBaseBlock();
-            else {
-                for (int i = 0; i < broken().length; i++) {
-                    if (broken()[i] == block) {
-                        return normal()[i];
-                    }
-                }
-
-                for (Block normalBlock : normal()) {
-                    if (normalBlock == block) {
-                        return normalBlock;
-                    }
-                }
-
-                return getBaseBlock();
-            }
-        }
-
-        default String getTexturePoolPathFor(Block block) {
-            if (!isMapped()) return getTexturePoolPath();
-            else {
-                Identifier id = Registries.BLOCK.getId(getBaseBlockFor(block));
-                return id.getPath();
-            }
-        }
-
-        default String getBrokenTexturePoolPathFor(Block block) {
-            return getTexturePoolPath();
-        }
     }
 
     public record BlockFamily(Block[] normal, Block[] broken) implements IBlockFamily { }
@@ -976,34 +987,15 @@ public class CustomBlocks {
         public boolean isMapped() {
             return mapped;
         }
-
-        @Override
-        public String getBrokenTexturePoolPathFor(Block block) {
-            if (!mapped) {
-                return getTexturePoolPath();
-            }
-
-            return Registries.BLOCK.getId(block).getPath();
-        }
     }
 
     public record BlockFamilyWeightedWithBase(Block[] normal, Block[] broken, int[] weights, Block baseBlock, String texturePoolPath) implements IBlockFamily {
-        @Override
-        public String getTexturePoolPath() {
-            return texturePoolPath;
-        }
-
         @Override
         public Block getBaseBlock() {
             if (baseBlock != null) {
                 return baseBlock;
             }
             return IBlockFamily.super.getBaseBlock();
-        }
-
-        @Override
-        public String getBrokenTexturePoolPathFor(Block block) {
-            return texturePoolPath;
         }
     }
 

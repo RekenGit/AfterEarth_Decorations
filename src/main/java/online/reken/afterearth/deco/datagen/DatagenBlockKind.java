@@ -13,7 +13,6 @@ import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TransparentBlock;
 import net.minecraft.block.WallBlock;
 import online.reken.afterearth.deco.block.custom.VerticalSlabBlock;
-import online.reken.afterearth.deco.block.custom.VerticalSlabType;
 
 public enum DatagenBlockKind {
     CUBE,
@@ -51,12 +50,4 @@ public enum DatagenBlockKind {
             case CUBE, SLAB, VERTICAL_SLAB, STAIRS, WALL -> true;
             default -> false;
         };
-    }
-
-    public boolean usesCubeTexturePool() {
-        return switch (this) {
-            case CUBE, SLAB, VERTICAL_SLAB, STAIRS, WALL -> true;
-            default -> false;
-        };
-    }
-}
+    }}

@@ -54,6 +54,7 @@ public class CustomItemGroups {
                         entries.add(Razor_Wire);
                         for (Block block : SIDE_BARRIER) entries.add(block);
                         entries.add(Iron_Ladder);
+                        entries.add(Vault_Doors);
                     }).build());
 
     public  static final ItemGroup Interior_Decoration_Item_Group = Registry.register(Registries.ITEM_GROUP,

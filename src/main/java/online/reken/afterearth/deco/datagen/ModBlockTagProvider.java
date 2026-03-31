@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.WallBlock;
-import online.reken.afterearth.deco.block.CustomBlocks;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
 
